@@ -1,0 +1,57 @@
+{
+  "name": "nodejs-connected-drive",
+  "version": "1.0.0",
+  "description": "NodeJS client for BMW Connected Drive",
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Jørgen Grimnes",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jorgenkg/nodejs-connected-drive.git"
+  },
+  "scripts": {
+    "test": "node --enable-source-maps --unhandled-rejections=strict dist/test/integration/index.js",
+    "dist": "npx tsc --build tsconfig.json",
+    "release": "npm run dist && standard-version -a"
+  },
+  "dependencies": {
+    "debug": "^4.3.1",
+    "got": "^11.8.1"
+  },
+  "devDependencies": {
+    "@koa/router": "^10.0.0",
+    "@sinonjs/fake-timers": "^6.0.1",
+    "@types/debug": "^4.1.5",
+    "@types/got": "^9.6.11",
+    "@types/koa": "^2.11.6",
+    "@types/koa-bodyparser": "^4.3.0",
+    "@types/koa__router": "^8.0.3",
+    "@types/node": "^14.14.16",
+    "@types/sinonjs__fake-timers": "^6.0.2",
+    "@types/tape": "^4.13.0",
+    "@typescript-eslint/eslint-plugin": "^4.11.1",
+    "@typescript-eslint/parser": "^4.11.1",
+    "eslint": "^7.16.0",
+    "eslint-plugin-sort-imports-es6-autofix": "^0.5.0",
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "standard-version": "^9.1.0",
+    "tape": "^5.1.0",
+    "typescript": "^4.1.3"
+  },
+  "keywords": [
+    "bmwconnecteddrive",
+    "bmw connected drive",
+    "connected drive",
+    "connecteddrive",
+    "bmw"
+  ],
+  "engines": {
+    "node": ">=12.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

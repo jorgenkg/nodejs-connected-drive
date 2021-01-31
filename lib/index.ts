@@ -23,7 +23,7 @@ export class ConnectedDriveApi {
     this.password = password;
   }
 
-  /** Send a REST request to the Sector API */
+  /** Send a REST request to the Connected Drive API */
   private async httpRequest<T>({
     path,
     method = "GET",
@@ -86,6 +86,7 @@ export class ConnectedDriveApi {
     }
   }
 
+  /** Authenticate with the Connected Drive API and store the resulting access_token on 'this'. */
   public async login(): Promise<void> {
     const { connectedDrive: { auth } } = this.configuration;
 
@@ -120,12 +121,14 @@ export class ConnectedDriveApi {
     this.configuration.logger.info("Successfully authenticated with the Connected Drive API");
   }
 
+  /** Returns a list specifying the physical configuration of vehicles associated with the login credentials. */
   public async getVehicles(): Promise<GetVehiclesResponse> {
     const path = this.configuration.connectedDrive.endpoints.getVehicles;
 
     return await this.httpRequest<GetVehiclesResponse>({ path });
   }
 
+  /** Returns details about a specific vehicle's supported Connected Drive services. */
   public async getVehicleDetails(vehicleVin: string): Promise<GetVehicleDetails> {
     const path = this.configuration.connectedDrive.endpoints.getVehicleDetails
       .replace("{vehicleVin}", vehicleVin);
@@ -133,12 +136,14 @@ export class ConnectedDriveApi {
     return await this.httpRequest<GetVehicleDetails>({ path });
   }
 
+  /** Returns a list specifying the connectivity and Connected Drive service status of vehicles associated with the login credentials. */
   public async getStatusOfAllVehicles(): Promise<GetStatusOfAllVehiclesResponse> {
     const path = this.configuration.connectedDrive.endpoints.getStatusOfAllVehicles;
 
     return await this.httpRequest<GetStatusOfAllVehiclesResponse>({ path });
   }
 
+  /** Execute a Connected Drive remote service. */
   public async executeRemoteService(vehicleVin: string, service: RemoteService): Promise<void> {
     const before = this.configuration.clock.Date.now();
 
@@ -191,6 +196,8 @@ export class ConnectedDriveApi {
           throw new Error("Event ID changed. Another operation is sent to the vehicle.");
         }
 
+        // The actions list is not sorted by time by default.
+        // Sort the list to get the correct storyline in the log line below.
         actions.sort((A, B) => new Date(A.creationTime).valueOf() - new Date(B.creationTime).valueOf());
 
         this.configuration.logger.debug(`Command ${service} executed actions: ${JSON.stringify(actions)}`);
@@ -201,7 +208,7 @@ export class ConnectedDriveApi {
 
         return status.event.rsEventStatus === RemoteServiceExecutionState.EXECUTED;
       }, {
-        message: "timed out",
+        message: `Timed out awaiting Connected Drive to execute service ${service}`,
         timeoutMs: this.configuration.connectedDrive.remoteServiceExecutionTimeoutMs,
         stepMs: this.configuration.connectedDrive.pollIntervalMs
       });
@@ -215,6 +222,7 @@ export class ConnectedDriveApi {
     }
   }
 
+  /** Poll the Connected Drive API for the current remote service execution status. */
   private async _getRemoteServiceStatus(vehicleVin: string): Promise<GetRemoteServiceStatusResponse> {
     const path = this.configuration.connectedDrive.endpoints.statusRemoteServices
       .replace("{vehicleVin}", vehicleVin);
@@ -222,6 +230,7 @@ export class ConnectedDriveApi {
     return await this.httpRequest<GetRemoteServiceStatusResponse>({ path });
   }
 
+  /** Helper function that fulfills its promise once the specified 'fn' return true. */
   private async _waitUntil(fn: () => Promise<boolean>, { timeoutMs, message, stepMs = 1000 }: {timeoutMs: number, message: string, stepMs?: number}) {
     const { clock } = this.configuration;
 

@@ -112,6 +112,7 @@ export type GetRemoteServiceStatusResponse = {
     "lastUpdated": string,
     "rsEventStatus": RemoteServiceExecutionState,
     "requestParams": string,
+    /** List of concluded events. The list is *not* sorted by time. */
     "actions": Array<{
       "rsStatus": RemoteServiceExecutionState,
       "rsDetailedStatus": RemoteServiceExecutionStateDetailed,

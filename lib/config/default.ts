@@ -1,7 +1,7 @@
 import { default as debug } from "debug";
 import { RemoteService } from "../@types/interfaces";
 
-export interface Configuration<Test extends boolean = false> {
+export type Configuration<Test extends boolean = false> = {
   connectedDrive: {
     remoteServiceExecutionTimeoutMs: number;
     pollIntervalMs: number;

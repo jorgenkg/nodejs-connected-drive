@@ -11,6 +11,11 @@
     "type": "git",
     "url": "https://github.com/jorgenkg/nodejs-connected-drive.git"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "scripts": {
     "test": "node --enable-source-maps --unhandled-rejections=strict dist/test/integration/index.js",
     "clean": "rm -rf dist/",
@@ -23,6 +28,7 @@
     "got": "^11.8.1"
   },
   "devDependencies": {
+    "@commitlint/config-conventional": "^11.0.0",
     "@koa/router": "^10.0.0",
     "@sinonjs/fake-timers": "^7.0.2",
     "@types/debug": "^4.1.5",
@@ -35,8 +41,10 @@
     "@types/tape": "^4.13.0",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
+    "commitlint": "^11.0.0",
     "eslint": "^7.19.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.5.0",
+    "husky": "^4.3.8",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "patch-package": "^6.2.2",

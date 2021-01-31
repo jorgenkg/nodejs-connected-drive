@@ -22,7 +22,7 @@ const api = new ConnectedDriveApi(username, password);
 // Fetch a list of vehicles associated with the credentials
 const vehicleIdentificationNumber = await api.getVehicles()[0].vin;
 // Trigger the Remote Service for remotely heating/cooling the car
-await api.changeAlarmState(vehicleIdentificationNumber, RemoteService.CLIMATE_NOW);
+await api.executeRemoteService(vehicleIdentificationNumber, RemoteService.CLIMATE_NOW);
 ```
 
 
@@ -45,7 +45,7 @@ The password associated with the BMW Connected Drive account
 ### Methods
 
 #### executeRemoteService | `executeRemoteService(vehicleVin: string, service: RemoteService): Promise<void>`
-Change the state of the system to arm or disarm the alarm. The alarm can be armed without specifying the panel code if 'Quick Arm' is enabled.
+Execute the specific service via the Connected Drive API. The function will resolve once the service command has been relayed to the vehicle.
 
 ##### vehicleVin
 Type: `string`

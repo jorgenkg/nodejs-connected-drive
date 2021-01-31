@@ -15,7 +15,8 @@
     "test": "node --enable-source-maps --unhandled-rejections=strict dist/test/integration/index.js",
     "clean": "rm -rf dist/",
     "dist": "npm run clean && npx tsc --build tsconfig.json",
-    "release": "npm run dist && standard-version -a"
+    "release": "npm run dist && standard-version -a",
+    "postinstall": "npx patch-package"
   },
   "dependencies": {
     "debug": "^4.3.1",

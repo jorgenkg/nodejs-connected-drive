@@ -53,8 +53,17 @@ export class ConnectedDriveApi {
         URL.resolve(host, path),
         {
           method,
-          headers: { ...headers, authorization: `Bearer ${this.accessToken}` },
-          body
+          headers: {
+            ...headers,
+            authorization: `Bearer ${this.accessToken}`,
+            ["user-agent"]: "nodejs-connected-drive",
+          },
+          body,
+          retry: {
+            limit: 2,
+            methods: ["GET", "POST"],
+            statusCodes: [404, 503, 504],
+          },
         }
       ).json();
     }

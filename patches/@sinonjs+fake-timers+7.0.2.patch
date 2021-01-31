@@ -1,0 +1,14 @@
+diff --git a/node_modules/@sinonjs/fake-timers/types/fake-timers-src.d.ts b/node_modules/@sinonjs/fake-timers/types/fake-timers-src.d.ts
+index d05c054..94f41d8 100644
+--- a/node_modules/@sinonjs/fake-timers/types/fake-timers-src.d.ts
++++ b/node_modules/@sinonjs/fake-timers/types/fake-timers-src.d.ts
+@@ -14,6 +14,9 @@ export function createClock(start: Date | number, loopLimit: number): {
+     timeouts: {};
+     Date: any;
+     loopLimit: number;
++    reset: () => void;
++    setSystemTime: (epoch: number) => void;
++    tickAsync: (ms: number) => Promise<void>;
+ };
+ /**
+  * Configuration object for the `install` method.

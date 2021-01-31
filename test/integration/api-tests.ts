@@ -8,7 +8,7 @@ import {
 import { Middleware } from "../test-helpers/compose-types.js";
 import FakeTimer from "@sinonjs/fake-timers";
 
-const clock = FakeTimer.createClock();
+const clock = FakeTimer.createClock(0, Infinity);
 
 test("It should support authentication with the user credentials", compose(
   withMockedConnectedDriveApi(defaults),

@@ -1,22 +1,55 @@
-name: Test
+name: CI
 
 on: [push]
 
 jobs:
   build:
-
+    name: Build and test
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [12.x]
-
+        node-version: [12, 13, 14, 15, 16]
     steps:
-    - uses: actions/checkout@v2
+    - name: Check out repository code
+      uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run dist
-    - run: npm run test
+    - name: Install packages
+      run: npm ci && npm run postinstall --if-present
+    - name: Transpile with Typescript
+      run: npm run dist --if-present
+    - name: Run tests
+      run: npm run test --if-present
+  
+  release:
+    needs: build
+    name: Create release
+    runs-on: ubuntu-latest
+    environment:
+      name: publishing
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+    - name: Tag release using standard-version
+      run: |
+        set -e
+
+        git config --local user.name "Github Actions"
+        git config --local user.email "github@bldng.ai"
+
+        git pull origin master
+             
+        npx run release
+
+        git push --tags origin master
+    - name: Publish to NPM
+      uses: JS-DevTools/npm-publish@v1
+      with:
+        token: ${{ secrets.NPM_TOKEN }}

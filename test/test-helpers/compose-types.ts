@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import tape from "tape";
+import * as tape from "tape";
 
 /** An async function performing test setup. The function must await next() before returning */
 export type Middleware<T> = (next: T extends undefined ? (() => Promise<void>) : (arg0: T) => Promise<void>) => Promise<void>;

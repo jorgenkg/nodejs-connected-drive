@@ -1,4 +1,4 @@
-import tape from "tape";
+import * as tape from "tape";
 
 const tests = [] as (() => void)[];
 

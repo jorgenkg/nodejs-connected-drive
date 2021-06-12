@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import * as crypto from "crypto";
+import * as http from "http";
+import * as Koa from "koa";
+import * as Router from "@koa/router";
+import * as tape from "tape";
+import * as util from "util";
 import { ConnectedDriveApi } from "../../lib/index.js";
-import crypto from "crypto";
-import http from "http";
-import Koa from "koa";
-import Router from "@koa/router";
-import tape from "tape";
-import util from "util";
 
+import * as bodyParser from "koa-bodyparser";
 import {
   GetRemoteServiceStatusResponse, GetStatusOfAllVehiclesResponse, GetVehicleDetails, GetVehiclesResponse, RemoteServiceCommand, RemoteServiceExecutionState, RemoteServiceExecutionStateDetailed, StartRemoteServiceResponse
 } from "../../lib/@types/interfaces.js";
 import { Middleware, TestSetup } from "./compose-types.js";
-import bodyParser from "koa-bodyparser";
 import type { Configuration } from "../../lib/config/default.js";
 
 

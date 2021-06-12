@@ -1,11 +1,12 @@
+import * as querystring from "querystring";
+import * as URL from "url";
 import { Configuration, default as DefaultConfiguration } from "./config/default.js";
 import {
   GetRemoteServiceStatusResponse,
   GetStatusOfAllVehiclesResponse as GetStatusOfAllVehiclesResponse, GetVehicleDetails, GetVehiclesResponse, RemoteService, RemoteServiceCommand, RemoteServiceExecutionState, StartRemoteServiceResponse
 } from "./@types/interfaces";
 import got from "got";
-import querystring from "querystring";
-import URL from "url";
+
 
 export { RemoteService } from "./@types/interfaces";
 

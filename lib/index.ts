@@ -10,16 +10,27 @@ import got from "got";
 
 export { RemoteService } from "./@types/interfaces";
 
+/**
+ * SDK class that expose the Connected Drive API.
+ * It is not necessary to call login explicitly. The SDK will lazily call `login()` to (re)authenticate when necessary.
+ */
 export class ConnectedDriveApi {
-  private configuration: Configuration<true> | Configuration<false>;
+  private readonly configuration: Configuration<true> | Configuration<false>;
 
-  private username: string;
-  private password: string;
+  private readonly username: string;
+  private readonly password: string;
   private sessionExpiresAt?: Date;
   private accessToken?: string;
 
-  constructor(username: string, password: string, _configuration?: Configuration<true> | Configuration<false>) {
-    this.configuration = { ...DefaultConfiguration, ..._configuration };
+  constructor(
+    /** Required. The Connected Drive username */
+    username: string,
+    /** Required. The Connected Drive username */
+    password: string,
+    /** Optional. Override the default configuration. */
+    configuration?: Configuration<true> | Configuration<false>
+  ) {
+    this.configuration = { ...DefaultConfiguration, ...configuration };
     this.username = username;
     this.password = password;
   }
@@ -29,16 +40,16 @@ export class ConnectedDriveApi {
     path,
     method = "GET",
     body,
-    isRetry = false,
+    forceLogin = false,
     headers
   }: {
     path: string;
     method?: "POST" | "GET";
     body?: string;
     headers?: Record<string, string>;
-    isRetry?: boolean;
+    forceLogin?: boolean;
   }): Promise<T> {
-    if(isRetry || !this.sessionExpiresAt || (this.sessionExpiresAt.valueOf() - this.configuration.clock.Date.now()) < 1000 * 60) {
+    if(forceLogin || !this.sessionExpiresAt || (this.sessionExpiresAt.valueOf() - this.configuration.clock.Date.now()) < 1000 * 60) {
       await this.login();
     }
 
@@ -49,8 +60,8 @@ export class ConnectedDriveApi {
     const { connectedDrive: { host } } = this.configuration;
 
     try {
-      this.configuration.logger.debug(`${method} ${host}${path} ${isRetry ? "(retry)" : ""}`);
-      return await got(
+      this.configuration.logger.debug(`${method} ${host}${path} ${forceLogin ? "(retry)" : ""}`);
+      const response = await got(
         URL.resolve(host, path),
         {
           method,
@@ -62,20 +73,21 @@ export class ConnectedDriveApi {
           body,
           retry: {
             limit: 2,
-            methods: ["GET", "POST"],
             statusCodes: [404, 503, 504],
           },
         }
-      ).json();
+      );
+      this.configuration.logger.debug(`${method} ${host}${path} response status ${response.statusCode}`, { body: JSON.parse(response.body) });
+      return JSON.parse(response.body) as T;
     }
     catch(error) {
       if(
         error instanceof got.HTTPError &&
         error.response.statusCode === 401 &&
-        !isRetry
+        !forceLogin
       ) {
         return await this.httpRequest({
-          path, method, body, isRetry: true
+          path, method, body, forceLogin: true
         });
       }
       if(error instanceof got.HTTPError) {
@@ -87,7 +99,7 @@ export class ConnectedDriveApi {
     }
   }
 
-  /** Authenticate with the Connected Drive API and store the resulting access_token on 'this'. */
+  /** Authenticate with the Connected Drive API and store the resulting access_token on 'this'. This function is also called lazily by the SDK when necessary. */
   public async login(): Promise<void> {
     const { connectedDrive: { auth } } = this.configuration;
 
@@ -144,7 +156,15 @@ export class ConnectedDriveApi {
     return await this.httpRequest<GetStatusOfAllVehiclesResponse>({ path });
   }
 
-  /** Execute a Connected Drive remote service. */
+  /**
+   * Execute a Connected Drive remote service. This may throw if:
+   * - specified vin isn't registered on the user
+   * - remote services aren't activated on the car
+   * - the car isn't online
+   * - the car-user relation hasn't been confirmed
+   * - the remote service takes too long time to complete. Default timeout 1 min.
+   * - if a new remote service command is sent to the car before this action has completed.
+   */
   public async executeRemoteService(vehicleVin: string, service: RemoteService): Promise<void> {
     const before = this.configuration.clock.Date.now();
 
@@ -181,50 +201,47 @@ export class ConnectedDriveApi {
       body: "{}"
     });
 
-    try {
-      await this._waitUntil(async() => {
-        const status = await this._getRemoteServiceStatus(vehicleVin);
+    await this.waitUntil(async() => {
+      const status = await this.getRemoteServiceStatus(vehicleVin);
 
-        const {
-          event: {
-            eventId,
-            rsEventStatus,
-            actions
-          }
-        } = status;
-
-        if(triggeredEventId !== eventId) {
-          throw new Error("Event ID changed. Another operation is sent to the vehicle.");
+      const {
+        event: {
+          eventId,
+          rsEventStatus,
+          actions
         }
+      } = status;
 
-        // The actions list is not sorted by time by default.
-        // Sort the list to get the correct storyline in the log line below.
-        actions.sort((A, B) => new Date(A.creationTime).valueOf() - new Date(B.creationTime).valueOf());
-
-        this.configuration.logger.debug(`Command ${service} executed actions: ${JSON.stringify(actions)}`);
-
-        const currentAction = actions.pop();
-
-        this.configuration.logger.info(`Waiting for command ${service} to be executed on ${vehicleVin} (eventId: ${eventId}, duration: ${this.configuration.clock.Date.now() - before} ms): ${rsEventStatus} (${currentAction?.rsDetailedStatus || "null"})`);
-
-        return status.event.rsEventStatus === RemoteServiceExecutionState.EXECUTED;
-      }, {
-        message: `Timed out awaiting Connected Drive to execute service ${service}`,
-        timeoutMs: this.configuration.connectedDrive.remoteServiceExecutionTimeoutMs,
-        stepMs: this.configuration.connectedDrive.pollIntervalMs
-      });
-
-      this.configuration.logger.info(`${service} executed on ${vehicleVin} after ${this.configuration.clock.Date.now() - before} ms`);
-    }
-    catch(error) {
-      if(error instanceof Error && error.message === "timed out") {
-        throw new Error("Timed out waiting for the Connected Drive API to execute service");
+      if(triggeredEventId !== eventId) {
+        throw new Error("Event ID changed. Another operation is sent to the vehicle.");
       }
-    }
+
+      // The actions list is not sorted by time by default.
+      // Sort the list to get the correct storyline in the log line below.
+      actions.sort((A, B) => new Date(A.creationTime).valueOf() - new Date(B.creationTime).valueOf());
+
+      this.configuration.logger.debug(`Command ${service} executed actions: ${JSON.stringify(actions)}`);
+
+      const currentAction = actions.pop();
+
+      this.configuration.logger.info(
+        `Waiting for command ${service} to be executed on ${vehicleVin} ` +
+        `(eventId: ${eventId}, duration: ${this.configuration.clock.Date.now() - before} ms): ` +
+        `${rsEventStatus} (${currentAction?.rsDetailedStatus || "null"})`
+      );
+
+      return status.event.rsEventStatus === RemoteServiceExecutionState.EXECUTED;
+    }, {
+      message: `Timed out awaiting Connected Drive to execute service ${service}`,
+      timeoutMs: this.configuration.connectedDrive.remoteServiceExecutionTimeoutMs,
+      stepMs: this.configuration.connectedDrive.pollIntervalMs
+    });
+
+    this.configuration.logger.info(`${service} executed on ${vehicleVin} after ${this.configuration.clock.Date.now() - before} ms`);
   }
 
   /** Poll the Connected Drive API for the current remote service execution status. */
-  private async _getRemoteServiceStatus(vehicleVin: string): Promise<GetRemoteServiceStatusResponse> {
+  private async getRemoteServiceStatus(vehicleVin: string): Promise<GetRemoteServiceStatusResponse> {
     const path = this.configuration.connectedDrive.endpoints.statusRemoteServices
       .replace("{vehicleVin}", vehicleVin);
 
@@ -232,12 +249,12 @@ export class ConnectedDriveApi {
   }
 
   /** Helper function that fulfills its promise once the specified 'fn' return true. */
-  private async _waitUntil(fn: () => Promise<boolean>, { timeoutMs, message, stepMs = 1000 }: {timeoutMs: number, message: string, stepMs?: number}) {
+  private async waitUntil(fn: () => Promise<boolean>, { timeoutMs, message, stepMs = 1000 }: {timeoutMs: number, message: string, stepMs?: number}) {
     const { clock } = this.configuration;
 
     const start = clock.Date.now();
 
-    while(clock.Date.now() - start < timeoutMs) {
+    while((clock.Date.now() - start) < timeoutMs) {
       if(await fn()) {
         return;
       }

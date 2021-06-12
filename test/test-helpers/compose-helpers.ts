@@ -153,7 +153,7 @@ class MockedConnectedDriveApi extends Koa {
         username,
         password,
         state
-      }: Record<string, string> = ctx.request.body;
+      } = ctx.request.body as Record<string, string>;
 
       if(client_id !== this.configuration.connectedDrive.auth.client_id) {
         ctx.response.status = 400;
@@ -195,10 +195,11 @@ class MockedConnectedDriveApi extends Koa {
     });
 
     router.use(async(ctx, next) => {
-      if(!this.isValidToken(ctx.request.headers.authorization)) {
+      const { authorization } = ctx.request.headers;
+      if(!authorization || !this.isValidToken(authorization)) {
         ctx.response.status = 401;
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        ctx.response.body = { message: `Invalid token provided: '${ctx.request.headers.authorization}'` };
+        ctx.response.body = { message: `Invalid token provided: '${authorization}'` };
         return;
       }
       await next();

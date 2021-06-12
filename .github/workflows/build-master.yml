@@ -1,7 +1,8 @@
-name: CI
+name: Build and release master
 
 on:
   push:
+    branches: [ master ]
     paths-ignore:
       - 'CHANGELOG.md'
 

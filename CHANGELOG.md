@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.0.5 (2021-06-12)
+
+
+### Bug Fixes
+
+* added comments to document exported components ([907fc18](https://github.com/jorgenkg/nodejs-connected-drive/commit/907fc1855354bf4b4f0bc24832a69df183b75190))
+
 ### 1.0.4 (2021-06-12)
 
 ### 1.0.3 (2021-06-12)

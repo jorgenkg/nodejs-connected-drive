@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### 1.0.3 (2021-06-12)
 
+* bump packages
+
 ### [1.0.2](https://github.com/jorgenkg/nodejs-connected-drive/compare/v1.0.1...v1.0.2) (2021-01-31)
 
 

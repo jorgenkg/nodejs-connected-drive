@@ -20,7 +20,8 @@
     "test": "node --enable-source-maps --unhandled-rejections=strict dist/test/integration/index.js",
     "clean": "rm -rf dist/",
     "dist": "npm run clean && npx tsc --build tsconfig.json",
-    "release": "npm run dist && npx standard-version -a"
+    "release": "npm run dist && npx standard-version -a",
+    "generate-docs": "npx typedoc --excludePrivate --hideGenerator --includeVersion --readme none --plugin none --out docs index.ts lib/@types/interfaces.ts"
   },
   "dependencies": {
     "debug": "^4.3.1",
@@ -48,6 +49,7 @@
     "koa-bodyparser": "^4.3.0",
     "standard-version": "^9.1.0",
     "tape": "^5.1.1",
+    "typedoc": "^0.20.36",
     "typescript": "^4.1.3"
   },
   "keywords": [

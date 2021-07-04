@@ -22,6 +22,7 @@ export type Configuration<Test extends boolean = false> = {
       getVehicles: string;
       getStatusOfAllVehicles: string;
       getVehicleDetails: string;
+      getVehicleDetails2: string;
       getStatusOfAllVehiclesRemoteService: string;
     };
   };
@@ -68,6 +69,7 @@ export default {
       getVehicles: "/api/me/vehicles/v2?all=true&brand=BM",
       getStatusOfAllVehicles: "/api/me/mapping/v4/status?brand=BM",
       getVehicleDetails: "/api/vehicle/service/v1/{vehicleVin}",
+      getVehicleDetails2: "/api/vehicle/dynamic/v1/{vehicleVin}",
     }
   },
   logger: {

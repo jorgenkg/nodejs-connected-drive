@@ -149,6 +149,14 @@ export class ConnectedDriveApi {
     return await this.httpRequest<GetVehicleDetails>({ path });
   }
 
+  /** Returns details about a specific vehicle's supported Connected Drive services. */
+  public async getVehicleDetails2(vehicleVin: string): Promise<GetVehicleDetails> {
+    const path = this.configuration.connectedDrive.endpoints.getVehicleDetails2
+      .replace("{vehicleVin}", vehicleVin);
+
+    return await this.httpRequest<GetVehicleDetails>({ path });
+  }
+
   /** Returns a list specifying the connectivity and Connected Drive service status of vehicles associated with the login credentials. */
   public async getStatusOfAllVehicles(): Promise<GetStatusOfAllVehiclesResponse> {
     const path = this.configuration.connectedDrive.endpoints.getStatusOfAllVehicles;

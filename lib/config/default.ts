@@ -61,7 +61,7 @@ export default {
       response_type: "token",
       scope: "authenticate_user vehicle_data remote_services",
     },
-    host: "https://www.bmw-connecteddrive.no",
+    host: "https://b2vapi.bmwgroup.com",
     endpoints: {
       executeRemoteServices: "/remoteservices/rsapi/v1/{vehicleVin}/{serviceType}",
       statusRemoteServices: "/remoteservices/rsapi/v1/{vehicleVin}/state/execution",

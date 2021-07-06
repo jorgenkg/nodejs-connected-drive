@@ -94,3 +94,11 @@ test("It should be able to execute 'Remote Services' on a vehicle if the capabil
     t.pass("Expected test not to throw");
   }
 ));
+
+test("It should be able to fetch technical details about a vehicle using its VIN", compose(
+  withMockedConnectedDriveApi(defaults),
+  withApi(defaults),
+  async(api, t) => {
+    t.ok(await api.getVehicleTechnicalDetails(defaults.mockData.vin), "Expected getVehicleTechnicalDetails() to return data");
+  }
+));

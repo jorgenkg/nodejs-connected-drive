@@ -34,6 +34,7 @@ export const defaults: Configuration<true> = {
       getStatusOfAllVehicles: "/api/me/mapping/v4/status?brand=BM",
       getVehicleDetails: "/api/vehicle/service/v1/{vehicleVin}",
       getStatusOfAllVehiclesRemoteService: "/api/me/vehicles/v2/{vehicleVin}/serviceExecutionStatus?serviceType={serviceType}",
+      getVehicleTechnicalDetails: "/api/vehicle/dynamic/v1/{vehicleVin}",
     }
   },
   logger: {

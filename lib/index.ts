@@ -3,7 +3,7 @@ import * as URL from "url";
 import { Configuration, default as DefaultConfiguration } from "./config/default.js";
 import {
   GetRemoteServiceStatusResponse,
-  GetStatusOfAllVehiclesResponse as GetStatusOfAllVehiclesResponse, GetVehicleDetails, GetVehiclesResponse, RemoteService, RemoteServiceCommand, RemoteServiceExecutionState, StartRemoteServiceResponse
+  GetStatusOfAllVehiclesResponse as GetStatusOfAllVehiclesResponse, GetTechnicalVehicleDetails, GetVehicleDetails, GetVehiclesResponse, RemoteService, RemoteServiceCommand, RemoteServiceExecutionState, StartRemoteServiceResponse
 } from "./@types/interfaces";
 import got from "got";
 
@@ -147,6 +147,14 @@ export class ConnectedDriveApi {
       .replace("{vehicleVin}", vehicleVin);
 
     return await this.httpRequest<GetVehicleDetails>({ path });
+  }
+
+  /** Returns details about a specific vehicle's supported Connected Drive services. */
+  public async getVehicleTechnicalDetails(vehicleVin: string): Promise<GetTechnicalVehicleDetails> {
+    const path = this.configuration.connectedDrive.endpoints.getVehicleTechnicalDetails
+      .replace("{vehicleVin}", vehicleVin);
+
+    return await this.httpRequest<GetTechnicalVehicleDetails>({ path });
   }
 
   /** Returns a list specifying the connectivity and Connected Drive service status of vehicles associated with the login credentials. */

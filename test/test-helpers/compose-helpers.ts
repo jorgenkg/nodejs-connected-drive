@@ -9,7 +9,7 @@ import { ConnectedDriveApi } from "../../lib/index.js";
 
 import * as bodyParser from "koa-bodyparser";
 import {
-  GetRemoteServiceStatusResponse, GetStatusOfAllVehiclesResponse, GetVehicleDetails, GetVehiclesResponse, RemoteServiceCommand, RemoteServiceExecutionState, RemoteServiceExecutionStateDetailed, StartRemoteServiceResponse
+  GetRemoteServiceStatusResponse, GetStatusOfAllVehiclesResponse, GetTechnicalVehicleDetails, GetVehicleDetails, GetVehiclesResponse, RemoteServiceCommand, RemoteServiceExecutionState, RemoteServiceExecutionStateDetailed, StartRemoteServiceResponse
 } from "../../lib/@types/interfaces.js";
 import { Middleware, TestSetup } from "./compose-types.js";
 import type { Configuration } from "../../lib/config/default.js";
@@ -425,6 +425,56 @@ class MockedConnectedDriveApi extends Koa {
         vin: this.configuration.mockData.vin,
         creationTime: new this.configuration.clock.Date().toISOString()
       } as StartRemoteServiceResponse;
+    });
+
+    router.get(this.configuration.connectedDrive.endpoints.getVehicleTechnicalDetails.replace("{vehicleVin}", ":vehicleVin"), ctx => {
+      if(ctx.params.vehicleVin !== this.configuration.mockData.vin) {
+        ctx.response.status = 400;
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        ctx.response.body = { message: `Incorrect vin specified: '${ctx.params.vehicleVin}'. Should be: '${this.configuration.mockData.vin}'` };
+        return;
+      }
+
+      ctx.response.status = 200;
+      ctx.response.body = {
+        "attributesMap": {
+          "remaining_fuel": "48",
+          "condition_based_services": "3,PENDING,2021-05,;1,OK,2023-02,25000;100,OK,2025-02,60000;",
+          "unitOfCombustionConsumption": "l/100km",
+          "unitOfLength": "km",
+          "vehicle_tracking": "false",
+          "unitOfEnergy": "kWh",
+          "unitOfElectricConsumption": "kWh/100km",
+          "mileage": "116709"
+        },
+        "vehicleMessages": {
+          "ccmMessages": [],
+          "cbsMessages": [{
+            "date": "2021-05",
+            "description": "Reserve service.",
+            "id": 3,
+            "messageType": "CBS",
+            "status": "PENDING",
+            "text": "Brake fluid"
+          }, {
+            "date": "2023-02",
+            "description": "Reserve service.",
+            "id": 1,
+            "messageType": "CBS",
+            "status": "OK",
+            "text": "Engine oil",
+            "unitOfLengthRemaining": "25000"
+          }, {
+            "date": "2025-02",
+            "description": "Reserve service.",
+            "id": 100,
+            "messageType": "CBS",
+            "status": "OK",
+            "text": "Visual inspection",
+            "unitOfLengthRemaining": "60000"
+          }]
+        }
+      } as GetTechnicalVehicleDetails;
     });
 
     this.use(router.routes());

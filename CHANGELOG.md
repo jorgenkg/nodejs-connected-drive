@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.0.7 (2021-07-06)
+
+
+### Bug Fixes
+
+* bump dependencies ([d450e71](https://github.com/jorgenkg/nodejs-connected-drive/commit/d450e71785eae5f11e645e93d5ff403c1bd4900f))
+
 ### 1.0.6 (2021-06-13)
 
 

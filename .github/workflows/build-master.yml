@@ -39,12 +39,12 @@ jobs:
     steps:
     - name: Check out repository code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Use Node.js
       uses: actions/setup-node@v2
     - name: Install packages
       run: npm ci && npm run postinstall --if-present
-    - name: Transpile with Typescript
-      run: npm run dist --if-present
     - name: Tag release and push to Github
       run: |
         set -e
@@ -54,9 +54,7 @@ jobs:
 
         git pull origin master
 
-        npx standard-version \
-          --no-verify \
-          --releaseCommitMessageFormat "chore: release {{currentTag}}"
+        npm run release
 
         git push --tags origin master
     - name: Publish to NPM

@@ -11,11 +11,11 @@ import * as bodyParser from "koa-bodyparser";
 import {
   GetRemoteServiceStatusResponse, GetStatusOfAllVehiclesResponse, GetTechnicalVehicleDetails, GetVehicleDetails, GetVehiclesResponse, RemoteServiceCommand, RemoteServiceExecutionState, RemoteServiceExecutionStateDetailed, StartRemoteServiceResponse
 } from "../../lib/@types/interfaces.js";
-import { Middleware, TestSetup } from "./compose-types.js";
+import { Middleware, TestComposer } from "./compose-types.js";
 import type { Configuration } from "../../lib/config/default.js";
 
 
-export const compose: TestSetup = (...composers: unknown[]) => {
+export const compose: TestComposer = (...composers: unknown[]) => {
   const test = composers.pop() as (...args: unknown[]) => Promise<void>;
   const results: unknown[] = [];
 
@@ -27,12 +27,11 @@ export const compose: TestSetup = (...composers: unknown[]) => {
       else {
         const middleware = composers.shift() as Middleware<unknown>; // leftmost middleware
         await middleware(
-          // await the 'next' function
           async(result: unknown) => {
             if(result !== undefined) {
               results.push(result);
             }
-
+            // await the 'next' function
             await _compose(t);
           }
         );
@@ -541,6 +540,6 @@ export function withMockedConnectedDriveApi<T extends boolean = false>(
       finally {
         await new Promise(resolve => server.close(resolve));
       }
-    }) as T extends true ? never : Middleware<undefined>;
+    }) as T extends true ? never : Middleware;
   }
 }

@@ -24,7 +24,7 @@ test("It should support automatic re-authentication once the credentials have ex
     clock.reset();
     clock.setSystemTime(Date.now());
     await next();
-  }) as Middleware<undefined>,
+  }) as Middleware,
   withMockedConnectedDriveApi({ ...defaults, clock: clock as unknown as typeof defaults.clock }),
   withApi({ ...defaults, clock: clock as unknown as typeof defaults.clock }),
   async(api, t) => {
@@ -39,7 +39,7 @@ test("It should support automatic re-authentication if the access token have bee
     clock.reset();
     clock.setSystemTime(Date.now());
     await next();
-  }) as Middleware<undefined>,
+  }) as Middleware,
   withMockedConnectedDriveApi({ ...defaults, clock: clock as unknown as typeof defaults.clock }, { expose: true }),
   withApi({ ...defaults, clock: clock as unknown as typeof defaults.clock }),
   async(driveApi, api, t) => {
@@ -78,7 +78,7 @@ test("It should be able to execute 'Remote Services' on a vehicle if the capabil
     clock.reset();
     clock.setSystemTime(Date.now());
     await next();
-  }) as Middleware<undefined>,
+  }) as Middleware,
   withMockedConnectedDriveApi({ ...defaults, clock: clock as unknown as typeof defaults.clock }, { expose: true }),
   withApi({ ...defaults, clock: clock as unknown as typeof defaults.clock }),
   async(driveApi, api, t) => {

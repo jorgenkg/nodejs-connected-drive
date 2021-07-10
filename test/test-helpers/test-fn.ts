@@ -18,7 +18,6 @@ const testConstructorDecorator = (
         .then(() => t.end())
         .catch(error => {
           t.end(error);
-          process.exit(1);
         });
 
     });

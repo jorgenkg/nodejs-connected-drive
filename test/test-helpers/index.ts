@@ -1,6 +1,6 @@
+import { Configuration } from "../../lib/@types/Configuration";
 import { default as debug } from "debug";
-import { RemoteService } from "../../lib/@types/interfaces.js";
-import type { Configuration } from "../../lib/config/default.js";
+import { RemoteService } from "../../lib/enums/RemoteService.js";
 
 export {
   compose,

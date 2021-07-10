@@ -12,13 +12,13 @@ A NodeJS client library written in TypeScript with test coverage. The implementa
 npm i -S nodejs-connected-drive
 ```
 
-## Usage
+## Example usage
 
 ```javascript
-import { ConnectedDriveApi, RemoteService } from "nodejs-connected-drive";
+import { ConnectedDrive, RemoteService } from "nodejs-connected-drive";
 
 // Setup the API client
-const api = new ConnectedDriveApi(username, password);
+const api = new ConnectedDrive(username, password);
 
 // Fetch a list of vehicles associated with the credentials
 const [{vin: vehicleIdentificationNumber}] = await api.getVehicles();
@@ -32,27 +32,12 @@ await api.executeRemoteService(vehicleIdentificationNumber, RemoteService.CLIMAT
 
 #### [Documentation is available here](https://jorgenkg.github.io/nodejs-connected-drive/)
 
-#### Constructor | new ConnectedDriveApi( username, password )
-
-###### username
-
-Type: `string`
-
-The user name of an existing BMW Connected Drive account.
-
-###### password
-
-Type: `string`
-
-The password associated with the BMW Connected Drive account
-
-#### Methods
-
-##### `executeRemoteService(vehicleVin: string, service: RemoteService): Promise<void>`
-
-Execute the specific service via the Connected Drive API. The function will resolve once the service command has been relayed to the vehicle.
-
-...
+Notable functions are listed on the [ConnectedDrive class](https://jorgenkg.github.io/nodejs-connected-drive/docs/classes/lib_connecteddrive.connecteddrive.html):
+- `ConnectedDrive.getVehicles`
+- `ConnectedDrive.executeRemoteService`
+- `ConnectedDrive.getStatusOfAllVehicles`
+- `ConnectedDrive.getVehicleDetails`
+- `ConnectedDrive.getVehicleTechnicalDetails`
 
 ## Disclaimer
 

@@ -1,32 +1,24 @@
 import * as querystring from "querystring";
 import * as URL from "url";
-import {
-  Configuration,
-  default as DefaultConfiguration
-} from "./config/default.js";
-import {
-  RemoteService,
-  RemoteServiceCommand,
-  RemoteServiceExecutionState
-} from "./@types/interfaces.js";
+import { Configuration } from "./@types/Configuration";
+import { default as DefaultConfiguration } from "./config/default.js";
+import { GetRemoteServiceStatusResponse } from "./enums/GetRemoteServiceStatusResponse";
+import { GetStatusOfAllVehiclesResponse as GetStatusOfAllVehiclesResponse } from "./@types/GetStatusOfAllVehiclesResponse";
+import { GetTechnicalVehicleDetails } from "./@types/GetTechnicalVehicleDetails";
+import { GetVehicleDetails } from "./@types/GetVehicleDetails";
+import { GetVehiclesResponse } from "./@types/GetVehiclesResponse";
+import { RemoteService } from "./enums/RemoteService";
+import { RemoteServiceCommand } from "./enums/RemoteServiceCommand";
+import { RemoteServiceExecutionState } from "./enums/RemoteServiceExecutionState";
+import { StartRemoteServiceResponse } from "./@types/StartRemoteServiceResponse";
 import got from "got";
-import type {
-  GetRemoteServiceStatusResponse,
-  GetStatusOfAllVehiclesResponse as GetStatusOfAllVehiclesResponse,
-  GetTechnicalVehicleDetails,
-  GetVehicleDetails,
-  GetVehiclesResponse,
-  StartRemoteServiceResponse
-} from "./@types/interfaces";
-
-
-export { RemoteService } from "./@types/interfaces";
 
 /**
  * SDK class that expose the Connected Drive API.
  * It is not necessary to call login explicitly. The SDK will lazily call `login()` to (re)authenticate when necessary.
  */
-export class ConnectedDriveApi {
+
+export class ConnectedDrive {
   readonly #configuration: Configuration<boolean>;
   readonly #username: string;
   readonly #password: string;
@@ -48,11 +40,7 @@ export class ConnectedDriveApi {
 
   /** Send a REST request to the Connected Drive API */
   async #httpRequest<T>({
-    path,
-    method = "GET",
-    body,
-    forceLogin = false,
-    headers
+    path, method = "GET", body, forceLogin = false, headers
   }: {
     path: string;
     method?: "POST" | "GET";
@@ -60,11 +48,11 @@ export class ConnectedDriveApi {
     headers?: Record<string, string>;
     forceLogin?: boolean;
   }): Promise<T> {
-    if(forceLogin || !this.#sessionExpiresAt || (this.#sessionExpiresAt.valueOf() - this.#configuration.clock.Date.now()) < 1000 * 60) {
+    if (forceLogin || !this.#sessionExpiresAt || (this.#sessionExpiresAt.valueOf() - this.#configuration.clock.Date.now()) < 1000 * 60) {
       await this.login();
     }
 
-    if(!this.#accessToken) {
+    if (!this.#accessToken) {
       throw new Error("No access token available");
     }
 
@@ -91,17 +79,15 @@ export class ConnectedDriveApi {
       this.#configuration.logger.debug(`${method} ${host}${path} response status ${response.statusCode}`, { body: JSON.parse(response.body) });
       return JSON.parse(response.body) as T;
     }
-    catch(error) {
-      if(
-        error instanceof got.HTTPError &&
+    catch (error) {
+      if (error instanceof got.HTTPError &&
         error.response.statusCode === 401 &&
-        !forceLogin
-      ) {
+        !forceLogin) {
         return await this.#httpRequest({
           path, method, body, forceLogin: true
         });
       }
-      if(error instanceof got.HTTPError) {
+      if (error instanceof got.HTTPError) {
         throw new Error(`HTTP ${method} ${path}: Status: ${error.response.statusCode}. Response body: ${error.response.rawBody.toString()}`);
       }
       else {
@@ -131,13 +117,13 @@ export class ConnectedDriveApi {
       }
     );
 
-    if(!response.headers.location) {
+    if (!response.headers.location) {
       throw new Error("Expected the Location header to be defined");
     }
 
     const queryStringFromHash = new URL.URL(response.headers.location).hash.slice(1);
 
-    const { access_token, expires_in } = querystring.parse(queryStringFromHash) as { access_token: string; expires_in: string };
+    const { access_token, expires_in } = querystring.parse(queryStringFromHash) as { access_token: string; expires_in: string; };
 
     this.#sessionExpiresAt = new this.#configuration.clock.Date(this.#configuration.clock.Date.now() + parseInt(expires_in) * 1000);
     this.#accessToken = access_token;
@@ -193,19 +179,19 @@ export class ConnectedDriveApi {
     const { vehicleRelationship } = await this.#httpRequest<GetStatusOfAllVehiclesResponse>({ path: vehicleDetailsPath });
     const foundVehicle = vehicleRelationship.find(({ vin }) => vehicleVin === vin);
 
-    if(!foundVehicle) {
+    if (!foundVehicle) {
       throw new Error(`Incorrect vehicle vin specified: '${vehicleVin}'. Found: ${JSON.stringify(vehicleRelationship.map(({ vin }) => vin))}`);
     }
 
-    if(foundVehicle.remoteServiceStatus !== "ACTIVE") {
+    if (foundVehicle.remoteServiceStatus !== "ACTIVE") {
       throw new Error(`The 'Remote Service' capability does not seem to be activated for vehicle ${vehicleVin}. Service status: ${foundVehicle.remoteServiceStatus}`);
     }
 
-    if(foundVehicle.connectivityStatus !== "ACTIVE") {
+    if (foundVehicle.connectivityStatus !== "ACTIVE") {
       throw new Error(`Vehicle ${vehicleVin} does not seem to be online. Connectivity status: ${foundVehicle.connectivityStatus}`);
     }
 
-    if(foundVehicle.relationshipStatus !== "CONFIRMED") {
+    if (foundVehicle.relationshipStatus !== "CONFIRMED") {
       throw new Error(`The user account does not seem to be a recognized owner of Vehicle ${vehicleVin}. Relationship status: ${foundVehicle.relationshipStatus}`);
     }
 
@@ -223,15 +209,9 @@ export class ConnectedDriveApi {
     await this.#waitUntil(async() => {
       const status = await this.#getRemoteServiceStatus(vehicleVin);
 
-      const {
-        event: {
-          eventId,
-          rsEventStatus,
-          actions
-        }
-      } = status;
+      const { event: { eventId, rsEventStatus, actions } } = status;
 
-      if(triggeredEventId !== eventId) {
+      if (triggeredEventId !== eventId) {
         throw new Error("Event ID changed. Another operation is sent to the vehicle.");
       }
 
@@ -270,14 +250,14 @@ export class ConnectedDriveApi {
   /** Helper function that fulfills its promise once the specified 'fn' return true. */
   async #waitUntil(
     fn: () => Promise<boolean>,
-    { timeoutMs, message, stepMs = 1000 }: {timeoutMs: number, message: string, stepMs?: number}
+    { timeoutMs, message, stepMs = 1000 }: { timeoutMs: number; message: string; stepMs?: number; }
   ): Promise<void> {
     const { clock } = this.#configuration;
 
     const start = clock.Date.now();
 
-    while((clock.Date.now() - start) < timeoutMs) {
-      if(await fn()) {
+    while ((clock.Date.now() - start) < timeoutMs) {
+      if (await fn()) {
         return;
       }
       else {

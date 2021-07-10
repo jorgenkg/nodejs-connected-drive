@@ -1,1 +1,2 @@
-export { ConnectedDriveApi, RemoteService } from "./lib/index.js";
+export { ConnectedDrive } from "./lib/ConnectedDrive.js";
+export { RemoteService } from "./lib/enums/RemoteService.js";

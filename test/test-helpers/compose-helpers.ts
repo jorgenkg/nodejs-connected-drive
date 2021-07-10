@@ -5,14 +5,20 @@ import * as Koa from "koa";
 import * as Router from "@koa/router";
 import * as tape from "tape";
 import * as util from "util";
-import { ConnectedDriveApi } from "../../lib/index.js";
+import { ConnectedDrive } from "../../lib/ConnectedDrive.js";
 
 import * as bodyParser from "koa-bodyparser";
-import {
-  GetRemoteServiceStatusResponse, GetStatusOfAllVehiclesResponse, GetTechnicalVehicleDetails, GetVehicleDetails, GetVehiclesResponse, RemoteServiceCommand, RemoteServiceExecutionState, RemoteServiceExecutionStateDetailed, StartRemoteServiceResponse
-} from "../../lib/@types/interfaces.js";
+import { Configuration } from "../../lib/@types/Configuration";
+import { GetRemoteServiceStatusResponse } from "../../lib/enums/GetRemoteServiceStatusResponse";
+import { GetStatusOfAllVehiclesResponse } from "../../lib/@types/GetStatusOfAllVehiclesResponse";
+import { GetTechnicalVehicleDetails } from "../../lib/@types/GetTechnicalVehicleDetails";
+import { GetVehicleDetails } from "../../lib/@types/GetVehicleDetails";
+import { GetVehiclesResponse } from "../../lib/@types/GetVehiclesResponse";
 import { Middleware, TestComposer } from "./compose-types.js";
-import type { Configuration } from "../../lib/config/default.js";
+import { RemoteServiceCommand } from "../../lib/enums/RemoteServiceCommand.js";
+import { RemoteServiceExecutionState } from "../../lib/enums/RemoteServiceExecutionState.js";
+import { RemoteServiceExecutionStateDetailed } from "../../lib/enums/RemoteServiceExecutionStateDetailed.js";
+import { StartRemoteServiceResponse } from "../../lib/@types/StartRemoteServiceResponse";
 
 
 export const compose: TestComposer = (...composers: unknown[]) => {
@@ -51,9 +57,9 @@ export function withApi(configuration: Configuration<true>, {
 }: {
   username?: string;
   password?: string;
-} = {}): Middleware<ConnectedDriveApi> {
+} = {}): Middleware<ConnectedDrive> {
   return async next => {
-    await next(new ConnectedDriveApi(
+    await next(new ConnectedDrive(
       username || configuration.mockData.username,
       password || configuration.mockData.password,
       configuration

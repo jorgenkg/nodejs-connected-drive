@@ -56,6 +56,10 @@ jobs:
 
         npm run release
 
+        npm run generate-docs
+        git add -A
+        git commit -q -m "chore: updated typedocs"
+
         git push --tags origin master
     - name: Publish to NPM
       uses: JS-DevTools/npm-publish@v1

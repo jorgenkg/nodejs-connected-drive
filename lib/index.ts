@@ -1,11 +1,23 @@
 import * as querystring from "querystring";
 import * as URL from "url";
-import { Configuration, default as DefaultConfiguration } from "./config/default.js";
 import {
-  GetRemoteServiceStatusResponse,
-  GetStatusOfAllVehiclesResponse as GetStatusOfAllVehiclesResponse, GetTechnicalVehicleDetails, GetVehicleDetails, GetVehiclesResponse, RemoteService, RemoteServiceCommand, RemoteServiceExecutionState, StartRemoteServiceResponse
-} from "./@types/interfaces";
+  Configuration,
+  default as DefaultConfiguration
+} from "./config/default.js";
+import {
+  RemoteService,
+  RemoteServiceCommand,
+  RemoteServiceExecutionState
+} from "./@types/interfaces.js";
 import got from "got";
+import type {
+  GetRemoteServiceStatusResponse,
+  GetStatusOfAllVehiclesResponse as GetStatusOfAllVehiclesResponse,
+  GetTechnicalVehicleDetails,
+  GetVehicleDetails,
+  GetVehiclesResponse,
+  StartRemoteServiceResponse
+} from "./@types/interfaces";
 
 
 export { RemoteService } from "./@types/interfaces";
@@ -27,7 +39,7 @@ export class ConnectedDriveApi {
     /** Required. The Connected Drive username */
     password: string,
     /** Optional. Override the default configuration. */
-    configuration?: Configuration<true> | Configuration<false>
+    configuration?: Configuration<boolean>
   ) {
     this.#configuration = { ...DefaultConfiguration, ...configuration };
     this.#username = username;

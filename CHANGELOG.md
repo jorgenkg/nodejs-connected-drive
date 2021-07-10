@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/jorgenkg/nodejs-connected-drive/compare/v1.0.7...v2.0.0) (2021-07-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* Makes private functions and variables truly private using the ECMA standard for private fns and vars
+
+### Features
+
+* use the new ecma definitions of private fns and vars. ([9edc259](https://github.com/jorgenkg/nodejs-connected-drive/commit/9edc2596ebb99970c98162478762cff9cfe4d456))
+
+
+### Bug Fixes
+
+* bump packages ([0de68a8](https://github.com/jorgenkg/nodejs-connected-drive/commit/0de68a8470530053cc9bf798dca34bc83ba279bc))
+
 ### 1.0.7 (2021-07-06)
 
 

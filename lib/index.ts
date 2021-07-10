@@ -15,12 +15,11 @@ export { RemoteService } from "./@types/interfaces";
  * It is not necessary to call login explicitly. The SDK will lazily call `login()` to (re)authenticate when necessary.
  */
 export class ConnectedDriveApi {
-  private readonly configuration: Configuration<true> | Configuration<false>;
-
-  private readonly username: string;
-  private readonly password: string;
-  private sessionExpiresAt?: Date;
-  private accessToken?: string;
+  readonly #configuration: Configuration<boolean>;
+  readonly #username: string;
+  readonly #password: string;
+  #sessionExpiresAt?: Date;
+  #accessToken?: string;
 
   constructor(
     /** Required. The Connected Drive username */
@@ -30,13 +29,13 @@ export class ConnectedDriveApi {
     /** Optional. Override the default configuration. */
     configuration?: Configuration<true> | Configuration<false>
   ) {
-    this.configuration = { ...DefaultConfiguration, ...configuration };
-    this.username = username;
-    this.password = password;
+    this.#configuration = { ...DefaultConfiguration, ...configuration };
+    this.#username = username;
+    this.#password = password;
   }
 
   /** Send a REST request to the Connected Drive API */
-  private async httpRequest<T>({
+  async #httpRequest<T>({
     path,
     method = "GET",
     body,
@@ -49,25 +48,25 @@ export class ConnectedDriveApi {
     headers?: Record<string, string>;
     forceLogin?: boolean;
   }): Promise<T> {
-    if(forceLogin || !this.sessionExpiresAt || (this.sessionExpiresAt.valueOf() - this.configuration.clock.Date.now()) < 1000 * 60) {
+    if(forceLogin || !this.#sessionExpiresAt || (this.#sessionExpiresAt.valueOf() - this.#configuration.clock.Date.now()) < 1000 * 60) {
       await this.login();
     }
 
-    if(!this.accessToken) {
+    if(!this.#accessToken) {
       throw new Error("No access token available");
     }
 
-    const { connectedDrive: { host } } = this.configuration;
+    const { connectedDrive: { host } } = this.#configuration;
 
     try {
-      this.configuration.logger.debug(`${method} ${host}${path} ${forceLogin ? "(retry)" : ""}`);
+      this.#configuration.logger.debug(`${method} ${host}${path} ${forceLogin ? "(retry)" : ""}`);
       const response = await got(
         URL.resolve(host, path),
         {
           method,
           headers: {
             ...headers,
-            authorization: `Bearer ${this.accessToken}`,
+            authorization: `Bearer ${this.#accessToken}`,
             ["user-agent"]: "nodejs-connected-drive",
           },
           body,
@@ -77,7 +76,7 @@ export class ConnectedDriveApi {
           },
         }
       );
-      this.configuration.logger.debug(`${method} ${host}${path} response status ${response.statusCode}`, { body: JSON.parse(response.body) });
+      this.#configuration.logger.debug(`${method} ${host}${path} response status ${response.statusCode}`, { body: JSON.parse(response.body) });
       return JSON.parse(response.body) as T;
     }
     catch(error) {
@@ -86,7 +85,7 @@ export class ConnectedDriveApi {
         error.response.statusCode === 401 &&
         !forceLogin
       ) {
-        return await this.httpRequest({
+        return await this.#httpRequest({
           path, method, body, forceLogin: true
         });
       }
@@ -100,8 +99,8 @@ export class ConnectedDriveApi {
   }
 
   /** Authenticate with the Connected Drive API and store the resulting access_token on 'this'. This function is also called lazily by the SDK when necessary. */
-  public async login(): Promise<void> {
-    const { connectedDrive: { auth } } = this.configuration;
+  async login(): Promise<void> {
+    const { connectedDrive: { auth } } = this.#configuration;
 
     const response = await got(
       URL.resolve(auth.host, auth.endpoints.authenticate),
@@ -113,8 +112,8 @@ export class ConnectedDriveApi {
           redirect_uri: auth.redirect_uri,
           response_type: auth.response_type,
           scope: auth.scope,
-          username: this.username,
-          password: this.password,
+          username: this.#username,
+          password: this.#password,
           state: auth.state
         }
       }
@@ -128,40 +127,40 @@ export class ConnectedDriveApi {
 
     const { access_token, expires_in } = querystring.parse(queryStringFromHash) as { access_token: string; expires_in: string };
 
-    this.sessionExpiresAt = new this.configuration.clock.Date(this.configuration.clock.Date.now() + parseInt(expires_in) * 1000);
-    this.accessToken = access_token;
+    this.#sessionExpiresAt = new this.#configuration.clock.Date(this.#configuration.clock.Date.now() + parseInt(expires_in) * 1000);
+    this.#accessToken = access_token;
 
-    this.configuration.logger.info("Successfully authenticated with the Connected Drive API");
+    this.#configuration.logger.info("Successfully authenticated with the Connected Drive API");
   }
 
   /** Returns a list specifying the physical configuration of vehicles associated with the login credentials. */
-  public async getVehicles(): Promise<GetVehiclesResponse> {
-    const path = this.configuration.connectedDrive.endpoints.getVehicles;
+  async getVehicles(): Promise<GetVehiclesResponse> {
+    const path = this.#configuration.connectedDrive.endpoints.getVehicles;
 
-    return await this.httpRequest<GetVehiclesResponse>({ path });
+    return await this.#httpRequest<GetVehiclesResponse>({ path });
   }
 
   /** Returns details about a specific vehicle's supported Connected Drive services. */
-  public async getVehicleDetails(vehicleVin: string): Promise<GetVehicleDetails> {
-    const path = this.configuration.connectedDrive.endpoints.getVehicleDetails
+  async getVehicleDetails(vehicleVin: string): Promise<GetVehicleDetails> {
+    const path = this.#configuration.connectedDrive.endpoints.getVehicleDetails
       .replace("{vehicleVin}", vehicleVin);
 
-    return await this.httpRequest<GetVehicleDetails>({ path });
+    return await this.#httpRequest<GetVehicleDetails>({ path });
   }
 
   /** Returns details about a specific vehicle's supported Connected Drive services. */
-  public async getVehicleTechnicalDetails(vehicleVin: string): Promise<GetTechnicalVehicleDetails> {
-    const path = this.configuration.connectedDrive.endpoints.getVehicleTechnicalDetails
+  async getVehicleTechnicalDetails(vehicleVin: string): Promise<GetTechnicalVehicleDetails> {
+    const path = this.#configuration.connectedDrive.endpoints.getVehicleTechnicalDetails
       .replace("{vehicleVin}", vehicleVin);
 
-    return await this.httpRequest<GetTechnicalVehicleDetails>({ path });
+    return await this.#httpRequest<GetTechnicalVehicleDetails>({ path });
   }
 
   /** Returns a list specifying the connectivity and Connected Drive service status of vehicles associated with the login credentials. */
-  public async getStatusOfAllVehicles(): Promise<GetStatusOfAllVehiclesResponse> {
-    const path = this.configuration.connectedDrive.endpoints.getStatusOfAllVehicles;
+  async getStatusOfAllVehicles(): Promise<GetStatusOfAllVehiclesResponse> {
+    const path = this.#configuration.connectedDrive.endpoints.getStatusOfAllVehicles;
 
-    return await this.httpRequest<GetStatusOfAllVehiclesResponse>({ path });
+    return await this.#httpRequest<GetStatusOfAllVehiclesResponse>({ path });
   }
 
   /**
@@ -173,13 +172,13 @@ export class ConnectedDriveApi {
    * - the remote service takes too long time to complete. Default timeout 1 min.
    * - if a new remote service command is sent to the car before this action has completed.
    */
-  public async executeRemoteService(vehicleVin: string, service: RemoteService): Promise<void> {
-    const before = this.configuration.clock.Date.now();
+  async executeRemoteService(vehicleVin: string, service: RemoteService): Promise<void> {
+    const before = this.#configuration.clock.Date.now();
 
-    const vehicleDetailsPath = this.configuration.connectedDrive.endpoints.getStatusOfAllVehicles
+    const vehicleDetailsPath = this.#configuration.connectedDrive.endpoints.getStatusOfAllVehicles
       .replace("{vehicleVin}", vehicleVin);
 
-    const { vehicleRelationship } = await this.httpRequest<GetStatusOfAllVehiclesResponse>({ path: vehicleDetailsPath });
+    const { vehicleRelationship } = await this.#httpRequest<GetStatusOfAllVehiclesResponse>({ path: vehicleDetailsPath });
     const foundVehicle = vehicleRelationship.find(({ vin }) => vehicleVin === vin);
 
     if(!foundVehicle) {
@@ -198,19 +197,19 @@ export class ConnectedDriveApi {
       throw new Error(`The user account does not seem to be a recognized owner of Vehicle ${vehicleVin}. Relationship status: ${foundVehicle.relationshipStatus}`);
     }
 
-    const path = this.configuration.connectedDrive.endpoints.executeRemoteServices
+    const path = this.#configuration.connectedDrive.endpoints.executeRemoteServices
       .replace("{vehicleVin}", vehicleVin)
       .replace("{serviceType}", RemoteServiceCommand[service]);
 
-    const { eventId: { eventId: triggeredEventId } } = await this.httpRequest<StartRemoteServiceResponse>({
+    const { eventId: { eventId: triggeredEventId } } = await this.#httpRequest<StartRemoteServiceResponse>({
       path,
       method: "POST",
       headers: { "Content-Type": "application/json;charset=UTF-8" },
       body: "{}"
     });
 
-    await this.waitUntil(async() => {
-      const status = await this.getRemoteServiceStatus(vehicleVin);
+    await this.#waitUntil(async() => {
+      const status = await this.#getRemoteServiceStatus(vehicleVin);
 
       const {
         event: {
@@ -228,37 +227,40 @@ export class ConnectedDriveApi {
       // Sort the list to get the correct storyline in the log line below.
       actions.sort((A, B) => new Date(A.creationTime).valueOf() - new Date(B.creationTime).valueOf());
 
-      this.configuration.logger.debug(`Command ${service} executed actions: ${JSON.stringify(actions)}`);
+      this.#configuration.logger.debug(`Command ${service} executed actions: ${JSON.stringify(actions)}`);
 
       const currentAction = actions.pop();
 
-      this.configuration.logger.info(
+      this.#configuration.logger.info(
         `Waiting for command ${service} to be executed on ${vehicleVin} ` +
-        `(eventId: ${eventId}, duration: ${this.configuration.clock.Date.now() - before} ms): ` +
+        `(eventId: ${eventId}, duration: ${this.#configuration.clock.Date.now() - before} ms): ` +
         `${rsEventStatus} (${currentAction?.rsDetailedStatus || "null"})`
       );
 
       return status.event.rsEventStatus === RemoteServiceExecutionState.EXECUTED;
     }, {
       message: `Timed out awaiting Connected Drive to execute service ${service}`,
-      timeoutMs: this.configuration.connectedDrive.remoteServiceExecutionTimeoutMs,
-      stepMs: this.configuration.connectedDrive.pollIntervalMs
+      timeoutMs: this.#configuration.connectedDrive.remoteServiceExecutionTimeoutMs,
+      stepMs: this.#configuration.connectedDrive.pollIntervalMs
     });
 
-    this.configuration.logger.info(`${service} executed on ${vehicleVin} after ${this.configuration.clock.Date.now() - before} ms`);
+    this.#configuration.logger.info(`${service} executed on ${vehicleVin} after ${this.#configuration.clock.Date.now() - before} ms`);
   }
 
   /** Poll the Connected Drive API for the current remote service execution status. */
-  private async getRemoteServiceStatus(vehicleVin: string): Promise<GetRemoteServiceStatusResponse> {
-    const path = this.configuration.connectedDrive.endpoints.statusRemoteServices
+  async #getRemoteServiceStatus(vehicleVin: string): Promise<GetRemoteServiceStatusResponse> {
+    const path = this.#configuration.connectedDrive.endpoints.statusRemoteServices
       .replace("{vehicleVin}", vehicleVin);
 
-    return await this.httpRequest<GetRemoteServiceStatusResponse>({ path });
+    return await this.#httpRequest<GetRemoteServiceStatusResponse>({ path });
   }
 
   /** Helper function that fulfills its promise once the specified 'fn' return true. */
-  private async waitUntil(fn: () => Promise<boolean>, { timeoutMs, message, stepMs = 1000 }: {timeoutMs: number, message: string, stepMs?: number}) {
-    const { clock } = this.configuration;
+  async #waitUntil(
+    fn: () => Promise<boolean>,
+    { timeoutMs, message, stepMs = 1000 }: {timeoutMs: number, message: string, stepMs?: number}
+  ): Promise<void> {
+    const { clock } = this.#configuration;
 
     const start = clock.Date.now();
 
@@ -267,7 +269,7 @@ export class ConnectedDriveApi {
         return;
       }
       else {
-        await new Promise(resolve => this.configuration.clock.setTimeout(resolve, stepMs).unref());
+        await new Promise<void>(resolve => this.#configuration.clock.setTimeout(resolve, stepMs).unref());
       }
     }
 

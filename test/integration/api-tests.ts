@@ -87,7 +87,7 @@ test("It should be able to execute 'Remote Services' on a vehicle if the capabil
     for(let i = 0; i < driveApi.remoteServiceStates.length - 1; i++) {
       driveApi.tickProvisionState();
       await clock.tickAsync(defaults.connectedDrive.pollIntervalMs);
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise<void>(resolve => setTimeout(resolve, 10));
     }
 
     await promiseServiceExecuted;

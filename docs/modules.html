@@ -57,59 +57,38 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<div class="tsd-panel tsd-typography">
-				<a href="#bmw-connected-drive" id="bmw-connected-drive" style="color: inherit; text-decoration: none;">
-					<h1>BMW Connected Drive</h1>
-				</a>
-				<p>A NodeJS client library written in TypeScript with test coverage. The implementation is intended for use in Smart Home applications.</p>
-				<a href="#requirements" id="requirements" style="color: inherit; text-decoration: none;">
-					<h2>Requirements</h2>
-				</a>
-				<p><code>node &gt;= 12.0</code></p>
-				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
-					<h2>Installation</h2>
-				</a>
-				<pre><code class="language-bash"><span style="color: #000000">npm i -S nodejs-connected-drive</span>
-</code></pre>
-				<a href="#example-usage" id="example-usage" style="color: inherit; text-decoration: none;">
-					<h2>Example usage</h2>
-				</a>
-				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">ConnectedDrive</span><span style="color: #000000">, </span><span style="color: #001080">RemoteService</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;nodejs-connected-drive&quot;</span><span style="color: #000000">;</span>
-
-<span style="color: #008000">// Setup the API client</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">api</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">ConnectedDrive</span><span style="color: #000000">(</span><span style="color: #001080">username</span><span style="color: #000000">, </span><span style="color: #001080">password</span><span style="color: #000000">);</span>
-
-<span style="color: #008000">// Fetch a list of vehicles associated with the credentials</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> [{</span><span style="color: #001080">vin</span><span style="color: #000000">: </span><span style="color: #0070C1">vehicleIdentificationNumber</span><span style="color: #000000">}] = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">api</span><span style="color: #000000">.</span><span style="color: #795E26">getVehicles</span><span style="color: #000000">();</span>
-
-<span style="color: #008000">// Trigger the Remote Service for remotely heating/cooling the car.</span>
-<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">api</span><span style="color: #000000">.</span><span style="color: #795E26">executeRemoteService</span><span style="color: #000000">(</span><span style="color: #001080">vehicleIdentificationNumber</span><span style="color: #000000">, </span><span style="color: #001080">RemoteService</span><span style="color: #000000">.</span><span style="color: #0070C1">CLIMATE_NOW</span><span style="color: #000000">);</span>
-</code></pre>
-				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
-					<h2>API</h2>
-				</a>
-				<a href="#documentation-is-available-here" id="documentation-is-available-here" style="color: inherit; text-decoration: none;">
-					<h4><a href="https://jorgenkg.github.io/nodejs-connected-drive/">Documentation is available here</a></h4>
-				</a>
-				<p>Notable functions are listed on the <a href="https://jorgenkg.github.io/nodejs-connected-drive/docs/classes/lib_connecteddrive.connecteddrive.html">ConnectedDrive class</a>:</p>
-				<ul>
-					<li><code>ConnectedDrive.getVehicles</code></li>
-					<li><code>ConnectedDrive.executeRemoteService</code></li>
-					<li><code>ConnectedDrive.getStatusOfAllVehicles</code></li>
-					<li><code>ConnectedDrive.getVehicleDetails</code></li>
-					<li><code>ConnectedDrive.getVehicleTechnicalDetails</code></li>
-				</ul>
-				<a href="#disclaimer" id="disclaimer" style="color: inherit; text-decoration: none;">
-					<h2>Disclaimer</h2>
-				</a>
-				<p>This library is not an official integration from BMW Connected Drive. This library is neither endorsed nor supported by BMW Connected Drive. This implementation is based on reverse engineering REST calls used by the BMW Connected Drive web app, and may thus intermittently stop working if the underlying API is updated.</p>
-				<p>Any utilization, consumption and application of this library is done at the user&#39;s own discretion. This library, its maintainers and BMW Connected Drive cannot guarantee the integrity of this library or any applications of this library.</p>
-			</div>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Modules</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-module"><a href="modules/index.html" class="tsd-kind-icon">index</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib__types_configuration.html" class="tsd-kind-icon">lib/@types/<wbr>Configuration</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib__types_getstatusofallvehiclesresponse.html" class="tsd-kind-icon">lib/@types/<wbr>Get<wbr>Status<wbr>OfAll<wbr>Vehicles<wbr>Response</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib__types_gettechnicalvehicledetails.html" class="tsd-kind-icon">lib/@types/<wbr>Get<wbr>Technical<wbr>Vehicle<wbr>Details</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib__types_getvehicledetails.html" class="tsd-kind-icon">lib/@types/<wbr>Get<wbr>Vehicle<wbr>Details</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib__types_getvehiclesresponse.html" class="tsd-kind-icon">lib/@types/<wbr>Get<wbr>Vehicles<wbr>Response</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib__types_startremoteserviceresponse.html" class="tsd-kind-icon">lib/@types/<wbr>Start<wbr>Remote<wbr>Service<wbr>Response</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib_connecteddrive.html" class="tsd-kind-icon">lib/<wbr>Connected<wbr>Drive</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib_config_default.html" class="tsd-kind-icon">lib/config/default</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib_enums_getremoteservicestatusresponse.html" class="tsd-kind-icon">lib/enums/<wbr>Get<wbr>Remote<wbr>Service<wbr>Status<wbr>Response</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib_enums_remoteservice.html" class="tsd-kind-icon">lib/enums/<wbr>Remote<wbr>Service</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib_enums_remoteservicecommand.html" class="tsd-kind-icon">lib/enums/<wbr>Remote<wbr>Service<wbr>Command</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib_enums_remoteserviceexecutionstate.html" class="tsd-kind-icon">lib/enums/<wbr>Remote<wbr>Service<wbr>Execution<wbr>State</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib_enums_remoteserviceexecutionstatedetailed.html" class="tsd-kind-icon">lib/enums/<wbr>Remote<wbr>Service<wbr>Execution<wbr>State<wbr>Detailed</a></li>
+								<li class="tsd-kind-module"><a href="modules/lib_enums_vehiclefeature.html" class="tsd-kind-icon">lib/enums/<wbr>Vehicle<wbr>Feature</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class=" ">
+					<li class="current ">
 						<a href="modules.html">Modules</a>
 					</li>
 					<li class=" tsd-kind-module">

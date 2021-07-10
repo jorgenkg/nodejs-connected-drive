@@ -32,7 +32,7 @@ await api.executeRemoteService(vehicleIdentificationNumber, RemoteService.CLIMAT
 
 #### [Documentation is available here](https://jorgenkg.github.io/nodejs-connected-drive/)
 
-Notable functions are listed on the [ConnectedDrive class](https://jorgenkg.github.io/nodejs-connected-drive/docs/classes/lib_connecteddrive.connecteddrive.html):
+Notable functions are listed on the [ConnectedDrive class](https://jorgenkg.github.io/nodejs-connected-drive/classes/lib_connecteddrive.connecteddrive.html):
 - `ConnectedDrive.getVehicles`
 - `ConnectedDrive.executeRemoteService`
 - `ConnectedDrive.getStatusOfAllVehicles`

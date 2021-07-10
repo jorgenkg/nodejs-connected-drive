@@ -1,6 +1,6 @@
 {
   "name": "nodejs-connected-drive",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "NodeJS client for BMW Connected Drive",
   "private": false,
   "main": "dist/index.js",

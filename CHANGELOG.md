@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/jorgenkg/nodejs-connected-drive/compare/v2.0.0...v3.0.0) (2021-07-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* The exported SDK class has been renamed ConnectedDriveApi -> ConnectedDrive
+
+### Bug Fixes
+
+* build typedocs on gh actions release ([f89ce57](https://github.com/jorgenkg/nodejs-connected-drive/commit/f89ce57fa83eff872a560de112cb0b18230643ba))
+* restructured project code ([47e2dd2](https://github.com/jorgenkg/nodejs-connected-drive/commit/47e2dd260287cc547329796e4f832d4efd3ac8d4))
+
 ## [2.0.0](https://github.com/jorgenkg/nodejs-connected-drive/compare/v1.0.7...v2.0.0) (2021-07-10)
 
 

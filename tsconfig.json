@@ -14,6 +14,7 @@
   "include": [
     "index.ts",
     "lib/**/*",
-    "test/**/*"
+    "test/**/*",
+    "example/index.ts"
   ]
 }

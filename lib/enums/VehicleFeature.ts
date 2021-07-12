@@ -1,5 +1,3 @@
-
-// eslint-disable-next-line no-shadow
 export enum VehicleFeature {
   /** climate */
   RCN = "RCN",

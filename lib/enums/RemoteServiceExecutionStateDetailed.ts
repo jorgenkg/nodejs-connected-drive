@@ -1,5 +1,3 @@
-
-// eslint-disable-next-line no-shadow
 export enum RemoteServiceExecutionStateDetailed {
   UNKNOWN = "UNKNOWN",
   OTHER_SERVICE_WITH_PROVISIONING_RUNNING = "OTHER_SERVICE_WITH_PROVISIONING_RUNNING",

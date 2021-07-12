@@ -1,5 +1,4 @@
-/** Enum of remote services that can be requested via the API. Eg: CLIMATE_NOW */
-// eslint-disable-next-line no-shadow
+/** Enum of remote services that can be executed via the API. Eg: CLIMATE_NOW */
 export enum RemoteService {
   /** Flash headlights */
   LIGHT_FLASH = "LIGHT_FLASH",

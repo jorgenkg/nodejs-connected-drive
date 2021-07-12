@@ -1,6 +1,7 @@
 import { RemoteService } from "./RemoteService";
 import { VehicleFeature } from "./VehicleFeature";
 
+/** Maps a 'remote service' name to a vehicle feature */
 export const RemoteServiceCommand: {[key in RemoteService]: VehicleFeature} = {
   /** climate */
   CLIMATE_NOW: VehicleFeature.RCN,

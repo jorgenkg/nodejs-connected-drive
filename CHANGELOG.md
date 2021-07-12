@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/jorgenkg/nodejs-connected-drive/compare/v3.0.0...v3.1.0) (2021-07-12)
+
+
+### Features
+
+* made ConnectedDrive class instantiable with a partial config object ([cc45b58](https://github.com/jorgenkg/nodejs-connected-drive/commit/cc45b582276f69b9941d7cb868063ad8bc5c1dbf))
+
+
+### Bug Fixes
+
+* bumped packages ([0abbbc2](https://github.com/jorgenkg/nodejs-connected-drive/commit/0abbbc202864fb5be0e07ff2da7f9705b3dff244))
+* improved jsdoc description on public functions ([5b92bc0](https://github.com/jorgenkg/nodejs-connected-drive/commit/5b92bc0902e2a50a78ec8a447ed702db9f240611))
+* migrated from deprecated URL.resolve -> WHATWG ([4d31165](https://github.com/jorgenkg/nodejs-connected-drive/commit/4d311654ac44a7b3ecff0fee1cf884b53aad569d))
+* move sourcemaps inline -> separate files in production build ([9bcec7e](https://github.com/jorgenkg/nodejs-connected-drive/commit/9bcec7e792ab66a6102e56ea2a487d73e89267a7))
+
 ## [3.0.0](https://github.com/jorgenkg/nodejs-connected-drive/compare/v2.0.0...v3.0.0) (2021-07-10)
 
 

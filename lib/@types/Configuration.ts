@@ -1,6 +1,6 @@
 import { RemoteService } from "../enums/RemoteService";
 
-
+/** The generic parameter shall be `true` for test cases and omitted (or `false`) in production instantiation.  */
 export type Configuration<Test extends boolean = false> = {
   connectedDrive: {
     remoteServiceExecutionTimeoutMs: number;
@@ -15,7 +15,7 @@ export type Configuration<Test extends boolean = false> = {
       scope: string;
     };
     host: string;
-    port: Test extends false ? undefined : number;
+    port: Test extends false ? never : number;
     endpoints: {
       executeRemoteServices: string;
       statusRemoteServices: string;
@@ -39,7 +39,7 @@ export type Configuration<Test extends boolean = false> = {
     clearInterval: typeof clearInterval;
     Date: typeof Date;
   };
-  mockData: Test extends false ? undefined : {
+  mockData: Test extends false ? never : {
     username: string;
     password: string;
     vin: string;

@@ -9,7 +9,7 @@ import { ConnectedDrive } from "../../lib/ConnectedDrive.js";
 
 import * as bodyParser from "koa-bodyparser";
 import { Configuration } from "../../lib/@types/Configuration";
-import { GetRemoteServiceStatusResponse } from "../../lib/enums/GetRemoteServiceStatusResponse";
+import { GetRemoteServiceStatusResponse } from "../../lib/@types/GetRemoteServiceStatusResponse";
 import { GetStatusOfAllVehiclesResponse } from "../../lib/@types/GetStatusOfAllVehiclesResponse";
 import { GetTechnicalVehicleDetails } from "../../lib/@types/GetTechnicalVehicleDetails";
 import { GetVehicleDetails } from "../../lib/@types/GetVehicleDetails";
@@ -57,9 +57,9 @@ export function withApi(configuration: Configuration<true>, {
 }: {
   username?: string;
   password?: string;
-} = {}): Middleware<ConnectedDrive> {
+} = {}): Middleware<ConnectedDrive<true>> {
   return async next => {
-    await next(new ConnectedDrive(
+    await next(new ConnectedDrive<true>(
       username || configuration.mockData.username,
       password || configuration.mockData.password,
       configuration

@@ -1,7 +1,9 @@
 import * as querystring from "querystring";
 import { Configuration } from "./@types/Configuration";
+import { deepMerge } from "./misc/deepMerge";
+import { DeepPartial } from "./@types/DeepPartial";
 import { default as DefaultConfiguration } from "./config/default.js";
-import { GetRemoteServiceStatusResponse } from "./enums/GetRemoteServiceStatusResponse";
+import { GetRemoteServiceStatusResponse } from "./@types/GetRemoteServiceStatusResponse";
 import { GetStatusOfAllVehiclesResponse as GetStatusOfAllVehiclesResponse } from "./@types/GetStatusOfAllVehiclesResponse";
 import { GetTechnicalVehicleDetails } from "./@types/GetTechnicalVehicleDetails";
 import { GetVehicleDetails } from "./@types/GetVehicleDetails";
@@ -15,11 +17,12 @@ import got from "got";
 
 /**
  * SDK class that expose the Connected Drive API.
- * It is not necessary to call login explicitly. The SDK will lazily call `login()` to (re)authenticate when necessary.
+ *
+ * Note that `login()` does not need to be called explicitly.
+ * The SDK will lazily call `login()` to (re)authenticate when necessary.
  */
-
-export class ConnectedDrive {
-  readonly #configuration: Configuration<boolean>;
+export class ConnectedDrive<Test extends boolean = false> {
+  readonly #configuration: Configuration<Test>;
   readonly #username: string;
   readonly #password: string;
   #sessionExpiresAt?: Date;
@@ -31,9 +34,9 @@ export class ConnectedDrive {
     /** Required. The Connected Drive username */
     password: string,
     /** Optional. Override the default configuration. */
-    configuration?: Configuration<boolean>
+    configuration?: DeepPartial<Configuration<Test>>
   ) {
-    this.#configuration = { ...DefaultConfiguration, ...configuration };
+    this.#configuration = (!configuration ? DefaultConfiguration : deepMerge(DefaultConfiguration, configuration)) as Configuration<Test>;
     this.#username = username;
     this.#password = password;
   }

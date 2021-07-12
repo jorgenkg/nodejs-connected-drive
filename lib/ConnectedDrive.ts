@@ -28,6 +28,7 @@ export class ConnectedDrive<Test extends boolean = false> {
   #sessionExpiresAt?: Date;
   #accessToken?: string;
 
+  /** The generic type parameter should be either omitted or `false` in production. */
   constructor(
     /** Required. The Connected Drive username */
     username: string,
@@ -134,14 +135,14 @@ export class ConnectedDrive<Test extends boolean = false> {
     this.#configuration.logger.info("Successfully authenticated with the Connected Drive API");
   }
 
-  /** Returns a list specifying the physical configuration of vehicles associated with the login credentials. */
+  /** Returns a list specifying the physical configuration of vehicles. */
   async getVehicles(): Promise<GetVehiclesResponse> {
     const path = this.#configuration.connectedDrive.endpoints.getVehicles;
 
     return await this.#httpRequest<GetVehiclesResponse>({ path });
   }
 
-  /** Returns details about a specific vehicle's supported Connected Drive services. */
+  /** Returns details describing the Connected Drive services supported by the vehicle. */
   async getVehicleDetails(vehicleVin: string): Promise<GetVehicleDetails> {
     const path = this.#configuration.connectedDrive.endpoints.getVehicleDetails
       .replace("{vehicleVin}", vehicleVin);
@@ -149,7 +150,7 @@ export class ConnectedDrive<Test extends boolean = false> {
     return await this.#httpRequest<GetVehicleDetails>({ path });
   }
 
-  /** Returns details about a specific vehicle's supported Connected Drive services. */
+  /** Returns technical details of the vehicle such as milage, fuel reserve and service messages. */
   async getVehicleTechnicalDetails(vehicleVin: string): Promise<GetTechnicalVehicleDetails> {
     const path = this.#configuration.connectedDrive.endpoints.getVehicleTechnicalDetails
       .replace("{vehicleVin}", vehicleVin);
@@ -157,7 +158,7 @@ export class ConnectedDrive<Test extends boolean = false> {
     return await this.#httpRequest<GetTechnicalVehicleDetails>({ path });
   }
 
-  /** Returns a list specifying the connectivity and Connected Drive service status of vehicles associated with the login credentials. */
+  /** Returns a list of vehicles detailing their connectivity and Connected Drive service status. */
   async getStatusOfAllVehicles(): Promise<GetStatusOfAllVehiclesResponse> {
     const path = this.#configuration.connectedDrive.endpoints.getStatusOfAllVehicles;
 

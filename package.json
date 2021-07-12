@@ -18,8 +18,7 @@
   },
   "scripts": {
     "test": "node --enable-source-maps --unhandled-rejections=strict dist/test/integration/index.js",
-    "clean": "rm -rf dist/",
-    "dist": "npm run clean && npx tsc --build tsconfig.prod.json",
+    "dist": "rm -rf dist/ && npx tsc --build tsconfig.prod.json && rm dist/lib/@types/*.js",
     "release": "npm run dist && npx standard-version -a",
     "generate-docs": "npx typedoc --excludePrivate --hideGenerator --includeVersion --readme ./README.md --out docs index.ts lib"
   },

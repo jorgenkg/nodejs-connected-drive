@@ -8,17 +8,17 @@ import * as util from "util";
 import { ConnectedDrive } from "../../lib/ConnectedDrive.js";
 
 import * as bodyParser from "koa-bodyparser";
-import { Configuration } from "../../lib/@types/Configuration";
-import { GetRemoteServiceStatusResponse } from "../../lib/@types/GetRemoteServiceStatusResponse";
-import { GetStatusOfAllVehiclesResponse } from "../../lib/@types/GetStatusOfAllVehiclesResponse";
-import { GetTechnicalVehicleDetails } from "../../lib/@types/GetTechnicalVehicleDetails";
-import { GetVehicleDetails } from "../../lib/@types/GetVehicleDetails";
-import { GetVehiclesResponse } from "../../lib/@types/GetVehiclesResponse";
 import { Middleware, TestComposer } from "./compose-types.js";
 import { RemoteServiceCommand } from "../../lib/enums/RemoteServiceCommand.js";
 import { RemoteServiceExecutionState } from "../../lib/enums/RemoteServiceExecutionState.js";
 import { RemoteServiceExecutionStateDetailed } from "../../lib/enums/RemoteServiceExecutionStateDetailed.js";
-import { StartRemoteServiceResponse } from "../../lib/@types/StartRemoteServiceResponse";
+import type { Configuration } from "../../lib/@types/Configuration";
+import type { GetRemoteServiceStatusResponse } from "../../lib/@types/GetRemoteServiceStatusResponse";
+import type { GetStatusOfAllVehiclesResponse } from "../../lib/@types/GetStatusOfAllVehiclesResponse";
+import type { GetTechnicalVehicleDetails } from "../../lib/@types/GetTechnicalVehicleDetails";
+import type { GetVehicleDetails } from "../../lib/@types/GetVehicleDetails";
+import type { GetVehiclesResponse } from "../../lib/@types/GetVehiclesResponse";
+import type { StartRemoteServiceResponse } from "../../lib/@types/StartRemoteServiceResponse";
 
 
 export const compose: TestComposer = (...composers: unknown[]) => {

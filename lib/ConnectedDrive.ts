@@ -1,19 +1,19 @@
 import * as querystring from "querystring";
-import { Configuration } from "./@types/Configuration";
 import { deepMerge } from "./misc/deepMerge";
-import { DeepPartial } from "./@types/DeepPartial";
-import { default as DefaultConfiguration } from "./config/default.js";
-import { GetRemoteServiceStatusResponse } from "./@types/GetRemoteServiceStatusResponse";
-import { GetStatusOfAllVehiclesResponse as GetStatusOfAllVehiclesResponse } from "./@types/GetStatusOfAllVehiclesResponse";
-import { GetTechnicalVehicleDetails } from "./@types/GetTechnicalVehicleDetails";
-import { GetVehicleDetails } from "./@types/GetVehicleDetails";
-import { GetVehiclesResponse } from "./@types/GetVehiclesResponse";
 import { RemoteService } from "./enums/RemoteService";
 import { RemoteServiceCommand } from "./enums/RemoteServiceCommand";
 import { RemoteServiceExecutionState } from "./enums/RemoteServiceExecutionState";
-import { StartRemoteServiceResponse } from "./@types/StartRemoteServiceResponse";
 import { URL } from "url";
+import DefaultConfiguration from "./config/default.js";
 import got from "got";
+import type { Configuration } from "./@types/Configuration";
+import type { DeepPartial } from "./@types/DeepPartial";
+import type { GetRemoteServiceStatusResponse } from "./@types/GetRemoteServiceStatusResponse";
+import type { GetStatusOfAllVehiclesResponse as GetStatusOfAllVehiclesResponse } from "./@types/GetStatusOfAllVehiclesResponse";
+import type { GetTechnicalVehicleDetails } from "./@types/GetTechnicalVehicleDetails";
+import type { GetVehicleDetails } from "./@types/GetVehicleDetails";
+import type { GetVehiclesResponse } from "./@types/GetVehiclesResponse";
+import type { StartRemoteServiceResponse } from "./@types/StartRemoteServiceResponse";
 
 /**
  * SDK class that expose the Connected Drive API.

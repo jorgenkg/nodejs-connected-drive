@@ -1,4 +1,4 @@
-import { UnionToIntersection } from "../@types/UnionToIntersection";
+import type { UnionToIntersection } from "../@types/UnionToIntersection";
 
 function isObject(val: unknown): val is { [key: string]: any; } {
   return typeof val === "object" && val !== null && !Array.isArray(val);

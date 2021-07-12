@@ -1,5 +1,5 @@
-import { Configuration } from "../@types/Configuration";
-import { default as debug } from "debug";
+import debug from "debug";
+import type { Configuration } from "../@types/Configuration";
 
 export default {
   connectedDrive: {

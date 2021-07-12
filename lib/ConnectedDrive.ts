@@ -1,5 +1,4 @@
 import * as querystring from "querystring";
-import * as URL from "url";
 import { Configuration } from "./@types/Configuration";
 import { default as DefaultConfiguration } from "./config/default.js";
 import { GetRemoteServiceStatusResponse } from "./enums/GetRemoteServiceStatusResponse";
@@ -11,6 +10,7 @@ import { RemoteService } from "./enums/RemoteService";
 import { RemoteServiceCommand } from "./enums/RemoteServiceCommand";
 import { RemoteServiceExecutionState } from "./enums/RemoteServiceExecutionState";
 import { StartRemoteServiceResponse } from "./@types/StartRemoteServiceResponse";
+import { URL } from "url";
 import got from "got";
 
 /**
@@ -61,7 +61,7 @@ export class ConnectedDrive {
     try {
       this.#configuration.logger.debug(`${method} ${host}${path} ${forceLogin ? "(retry)" : ""}`);
       const response = await got(
-        URL.resolve(host, path),
+        new URL(path, host).href,
         {
           method,
           headers: {
@@ -101,7 +101,7 @@ export class ConnectedDrive {
     const { connectedDrive: { auth } } = this.#configuration;
 
     const response = await got(
-      URL.resolve(auth.host, auth.endpoints.authenticate),
+      new URL(auth.endpoints.authenticate, auth.host).href,
       {
         method: "POST",
         followRedirect: false,
@@ -121,7 +121,7 @@ export class ConnectedDrive {
       throw new Error("Expected the Location header to be defined");
     }
 
-    const queryStringFromHash = new URL.URL(response.headers.location).hash.slice(1);
+    const queryStringFromHash = new URL(response.headers.location).hash.slice(1);
 
     const { access_token, expires_in } = querystring.parse(queryStringFromHash) as { access_token: string; expires_in: string; };
 

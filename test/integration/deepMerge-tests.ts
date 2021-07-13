@@ -1,7 +1,5 @@
-import {
-  compose,
-  test
-} from "../test-helpers/index.js";
+import * as test from "tape";
+import { compose } from "../test-helpers/index.js";
 import { deepMerge } from "../../lib/misc/deepMerge.js";
 
 test("It should merge vanilla single-level objects", compose(

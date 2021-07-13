@@ -1,8 +1,8 @@
 import * as FakeTimer from "@sinonjs/fake-timers";
+import * as test from "tape";
 import {
   compose,
   defaults,
-  test,
   withApi,
   withMockedConnectedDriveApi
 } from "../test-helpers/index.js";

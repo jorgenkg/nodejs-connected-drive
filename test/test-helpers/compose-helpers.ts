@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import * as bodyParser from "koa-bodyparser";
 import * as crypto from "crypto";
 import * as http from "http";
 import * as Koa from "koa";
@@ -6,8 +7,6 @@ import * as Router from "@koa/router";
 import * as tape from "tape";
 import * as util from "util";
 import { ConnectedDrive } from "../../lib/ConnectedDrive.js";
-
-import * as bodyParser from "koa-bodyparser";
 import { Middleware, TestComposer } from "./compose-types.js";
 import { RemoteServiceCommand } from "../../lib/enums/RemoteServiceCommand.js";
 import { RemoteServiceExecutionState } from "../../lib/enums/RemoteServiceExecutionState.js";
@@ -26,27 +25,19 @@ export const compose: TestComposer = (...composers: unknown[]) => {
   const results: unknown[] = [];
 
   return async function _compose(t: tape.Test): Promise<void> {
-    try {
-      if (composers.length === 0) {
-        await test(...results, t);
-      }
-      else {
-        const middleware = composers.shift() as Middleware<unknown>; // leftmost middleware
-        await middleware(
-          async(result: unknown) => {
-            if(result !== undefined) {
-              results.push(result);
-            }
-            // await the 'next' function
-            await _compose(t);
-          }
-        );
-      }
+    if (composers.length === 0) {
+      await test(...results, t);
     }
-    catch(err) {
-      // eslint-disable-next-line no-console
-      console.error(err);
-      process.exit(1);
+    else {
+      const middleware = composers.shift() as Middleware<unknown>; // leftmost middleware
+      await middleware(
+        async(result: unknown) => {
+          if(result !== undefined) {
+            results.push(result);
+          }
+          await _compose(t);
+        }
+      );
     }
   };
 };

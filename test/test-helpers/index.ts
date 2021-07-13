@@ -8,8 +8,6 @@ export {
   withMockedConnectedDriveApi
 } from "./compose-helpers.js";
 
-export { test, run } from "./test-fn.js";
-
 export const defaults: Configuration<true> = {
   connectedDrive: {
     remoteServiceExecutionTimeoutMs: 1000 * 60 * 2,

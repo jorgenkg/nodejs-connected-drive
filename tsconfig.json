@@ -15,6 +15,7 @@
     "index.ts",
     "lib/**/*",
     "test/**/*",
-    "example/index.ts"
+    "example/index.ts",
+    "commitlint.config.ts"
   ]
 }

@@ -29,7 +29,7 @@
   "devDependencies": {
     "@commitlint/cli": "12.1.4",
     "@commitlint/config-conventional": "12.1.4",
-    "@koa/router": "10.0.0",
+    "@koa/router": "10.1.0",
     "@sinonjs/fake-timers": "7.1.2",
     "@types/debug": "4.1.6",
     "@types/got": "9.6.12",

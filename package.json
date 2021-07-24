@@ -11,12 +11,8 @@
     "type": "git",
     "url": "https://github.com/jorgenkg/nodejs-connected-drive.git"
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS --config dist/commitlint.config.js"
-    }
-  },
   "scripts": {
+    "prepare": "npx husky install",
     "test": "npx tape --enable-source-maps --unhandled-rejections=strict dist/test/integration/*.js",
     "dist": "rm -rf dist/ && npx tsc --build tsconfig.prod.json && rm dist/lib/@types/*.js",
     "release": "npm run dist && npx standard-version -a",

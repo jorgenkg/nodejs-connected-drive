@@ -12,7 +12,7 @@
     "url": "https://github.com/jorgenkg/nodejs-connected-drive.git"
   },
   "scripts": {
-    "prepare": "npx husky install",
+    "prepare": "npx husky install && npx patch-package",
     "test": "npx tape --enable-source-maps --unhandled-rejections=strict dist/test/integration/*.js",
     "dist": "rm -rf dist/ && npx tsc --build tsconfig.prod.json && rm dist/lib/@types/*.js",
     "release": "npm run dist && npx standard-version -a",
@@ -37,11 +37,13 @@
     "@types/tape": "4.13.1",
     "@typescript-eslint/eslint-plugin": "4.28.4",
     "@typescript-eslint/parser": "4.28.4",
+    "changelog-parser": "^2.8.0",
     "eslint": "7.31.0",
     "eslint-plugin-sort-imports-es6-autofix": "0.6.0",
     "husky": "7.0.1",
     "koa": "2.13.1",
     "koa-bodyparser": "4.3.0",
+    "patch-package": "^6.4.7",
     "standard-version": "9.3.1",
     "tape": "5.2.2",
     "typedoc": "0.21.4",

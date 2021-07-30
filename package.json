@@ -38,7 +38,7 @@
     "@typescript-eslint/eslint-plugin": "4.28.5",
     "@typescript-eslint/parser": "4.28.5",
     "changelog-parser": "2.8.0",
-    "eslint": "7.31.0",
+    "eslint": "7.32.0",
     "eslint-plugin-sort-imports-es6-autofix": "0.6.0",
     "husky": "7.0.1",
     "koa": "2.13.1",

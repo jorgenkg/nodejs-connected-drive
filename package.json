@@ -23,8 +23,8 @@
     "got": "^11.8.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "13.1.0",
-    "@commitlint/config-conventional": "13.1.0",
+    "@commitlint/cli": "13.2.0",
+    "@commitlint/config-conventional": "13.2.0",
     "@koa/router": "10.1.1",
     "@sinonjs/fake-timers": "7.1.2",
     "@types/debug": "4.1.7",

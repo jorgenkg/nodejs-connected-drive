@@ -18,7 +18,7 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install packages
@@ -40,7 +40,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Use Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
     - name: Generate standard version changelog
       run: |
         npm ci
@@ -63,7 +63,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Use Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
     - name: Install packages
       run: npm ci && npm run postinstall --if-present
     - name: Tag release and push to Github

@@ -26,7 +26,7 @@
     "@commitlint/cli": "16.2.3",
     "@commitlint/config-conventional": "16.2.1",
     "@koa/router": "10.1.1",
-    "@sinonjs/fake-timers": "8.1.0",
+    "@sinonjs/fake-timers": "9.1.1",
     "@types/debug": "4.1.7",
     "@types/got": "9.6.12",
     "@types/koa": "2.13.4",

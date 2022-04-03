@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.1](https://github.com/jorgenkg/nodejs-connected-drive/compare/v3.1.0...v3.1.1) (2022-04-03)
+
+
+### Bug Fixes
+
+* removed unnecessary test abstraction level of async tape test ([0be7fd6](https://github.com/jorgenkg/nodejs-connected-drive/commit/0be7fd620e0466990f3661ec0901b48ad092104a))
+
 ## [3.1.0](https://github.com/jorgenkg/nodejs-connected-drive/compare/v3.0.0...v3.1.0) (2021-07-12)
 
 

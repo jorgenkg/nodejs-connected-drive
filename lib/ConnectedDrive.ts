@@ -1,11 +1,11 @@
-import * as querystring from "querystring";
 import { deepMerge } from "./misc/deepMerge";
 import { RemoteService } from "./enums/RemoteService";
 import { RemoteServiceCommand } from "./enums/RemoteServiceCommand";
 import { RemoteServiceExecutionState } from "./enums/RemoteServiceExecutionState";
-import { URL } from "url";
+import { URL } from "iso-url";
 import DefaultConfiguration from "./config/default.js";
-import got from "got";
+import fetch from "cross-fetch";
+import fetchRetry from "./misc/fetchRetry";
 import type { Configuration } from "./@types/Configuration";
 import type { DeepPartial } from "./@types/DeepPartial";
 import type { GetRemoteServiceStatusResponse } from "./@types/GetRemoteServiceStatusResponse";
@@ -62,72 +62,69 @@ export class ConnectedDrive<Test extends boolean = false> {
 
     const { connectedDrive: { host } } = this.#configuration;
 
-    try {
-      this.#configuration.logger.debug(`${method} ${host}${path} ${forceLogin ? "(retry)" : ""}`);
-      const response = await got(
-        new URL(path, host).href,
-        {
-          method,
-          headers: {
-            ...headers,
-            authorization: `Bearer ${this.#accessToken}`,
-            ["user-agent"]: "nodejs-connected-drive",
-          },
-          body,
-          retry: {
-            limit: 2,
-            statusCodes: [404, 503, 504],
-          },
-        }
-      );
-      this.#configuration.logger.debug(`${method} ${host}${path} response status ${response.statusCode}`, { body: JSON.parse(response.body) });
-      return JSON.parse(response.body) as T;
+    this.#configuration.logger.debug(`${method} ${host}${path} ${forceLogin ? "(retry)" : ""}`);
+    const response = await fetchRetry(
+      new URL(path, host).href,
+      {
+        method,
+        headers: {
+          ...headers,
+          authorization: `Bearer ${this.#accessToken}`,
+          ["user-agent"]: "nodejs-connected-drive",
+        },
+        body,
+      },
+      {
+        limit: 2,
+        statusCodes: [404, 503, 504],
+      }
+    );
+    if (response.status === 401 && !forceLogin) {
+      return await this.#httpRequest({
+        path, method, body, forceLogin: true
+      });
     }
-    catch (error) {
-      if (error instanceof got.HTTPError &&
-        error.response.statusCode === 401 &&
-        !forceLogin) {
-        return await this.#httpRequest({
-          path, method, body, forceLogin: true
-        });
-      }
-      if (error instanceof got.HTTPError) {
-        throw new Error(`HTTP ${method} ${path}: Status: ${error.response.statusCode}. Response body: ${error.response.rawBody.toString()}`);
-      }
-      else {
-        throw error;
-      }
+    else if (response.status >= 400) {
+      throw new Error(`HTTP ${method} ${path}: Status: ${response.status}. Response body: ${await response.text()}`);
     }
+    const responseBody = await response.json() as T;
+    this.#configuration.logger.debug(`${method} ${host}${path} response status ${response.status}`, { body: responseBody });
+    return responseBody;
   }
 
   /** Authenticate with the Connected Drive API and store the resulting access_token on 'this'. This function is also called lazily by the SDK when necessary. */
   async login(): Promise<void> {
     const { connectedDrive: { auth } } = this.#configuration;
 
-    const response = await got(
-      new URL(auth.endpoints.authenticate, auth.host).href,
+    const formData = new URLSearchParams();
+    formData.set("client_id", auth.client_id);
+    formData.set("redirect_uri", auth.redirect_uri);
+    formData.set("response_type", auth.response_type);
+    formData.set("scope", auth.scope);
+    formData.set("username", this.#username);
+    formData.set("password", this.#password);
+    formData.set("state", auth.state);
+
+    const response = await fetch(
+      new URL(auth.endpoints.authenticate, auth.host).toString(),
       {
         method: "POST",
-        followRedirect: false,
-        form: {
-          client_id: auth.client_id,
-          redirect_uri: auth.redirect_uri,
-          response_type: auth.response_type,
-          scope: auth.scope,
-          username: this.#username,
-          password: this.#password,
-          state: auth.state
-        }
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body: formData.toString()
       }
     );
 
-    if (!response.headers.location) {
+    const location = response.headers.get("location");
+
+    if (!location) {
       throw new Error("Expected the Location header to be defined");
     }
 
-    const queryStringFromHash = new URL(response.headers.location).hash.slice(1);
+    const queryStringFromHash = new URL(location).hash.slice(1);
 
-    const { access_token, expires_in } = querystring.parse(queryStringFromHash) as { access_token: string; expires_in: string; };
+    const params = new URLSearchParams(queryStringFromHash);
+    const access_token = params.get("access_token") as string;
+    const expires_in = params.get("expires_in") as string;
 
     this.#sessionExpiresAt = new this.#configuration.clock.Date(this.#configuration.clock.Date.now() + parseInt(expires_in) * 1000);
     this.#accessToken = access_token;

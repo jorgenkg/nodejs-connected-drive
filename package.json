@@ -25,7 +25,7 @@
   "devDependencies": {
     "@commitlint/cli": "16.3.0",
     "@commitlint/config-conventional": "16.2.4",
-    "@koa/router": "10.1.1",
+    "@koa/router": "11.0.1",
     "@sinonjs/fake-timers": "9.1.2",
     "@types/debug": "4.1.7",
     "@types/got": "9.6.12",

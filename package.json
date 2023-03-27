@@ -34,7 +34,7 @@
     "@types/koa-bodyparser": "4.3.10",
     "@types/node": "16.18.21",
     "@types/sinonjs__fake-timers": "8.1.2",
-    "@types/tape": "4.13.3",
+    "@types/tape": "4.13.4",
     "@typescript-eslint/eslint-plugin": "5.57.0",
     "@typescript-eslint/parser": "5.57.0",
     "changelog-parser": "2.8.1",

@@ -31,7 +31,7 @@
     "@types/got": "9.6.12",
     "@types/koa": "2.15.0",
     "@types/koa__router": "8.0.11",
-    "@types/koa-bodyparser": "4.3.12",
+    "@types/koa-bodyparser": "4.3.13",
     "@types/node": "16.18.126",
     "@types/sinonjs__fake-timers": "8.1.5",
     "@types/tape": "4.13.4",
